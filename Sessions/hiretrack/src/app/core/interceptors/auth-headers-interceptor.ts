@@ -23,11 +23,12 @@ export const authHeadersInterceptor: HttpInterceptorFn = (req, next) => {
         apiKey: token,
         Authorization: `Bearer ${authToken}`,
         'Content-Type': 'application/json',
+        'Prefer': 'return=representation' 
       },
     });
-    if (req.method === 'POST') {
-      clonedReq.headers.set('Prefer', 'return=representation');
-    }
+    // if (req.method === 'POST') {
+    //   clonedReq.headers.set('Prefer', 'return=representation');
+    // }
     return next(clonedReq);
   }
 

@@ -1,32 +1,205 @@
-<div class="job-form-section">
-    <div class="job-form">
-        <form [formGroup]="jobForm" (ngSubmit)="onSubmit()">
-            <div class="form-control">
-                <label for="company_name">Company Name</label>
-                <input id="company_name" formControlName="company_name" type="text" placeholder="Enter company name" />
-            </div>
-            <div class="form-control">
-                <label for="role">Role</label>
-                <input id="role" formControlName="role" type="text" placeholder="Enter role" />
-            </div>
-            <div class="form-control">
-                <label for="expected_salary">Expected Salary</label>
-                <input id="expected_salary" formControlName="expected_salary" type="number" placeholder="Enter expected salary" />
-            </div>
-            <div class="form-control">
-                <label for="salary_currency">Salary Currency</label>
-                <input id="salary_currency" formControlName="salary_currency" type="text" placeholder="Enter salary currency (e.g., USD)" />
-            </div>
-            <div class="form-control">
-                <label for="priority">Priority</label>
-                <select id="priority" formControlName="priority">
-                    <option value="">Select priority</option>
-                    <option value="low">Low</option>
-                    <option value="medium">Medium</option>
-                    <option value="high">High</option>
-                </select>
-            </div>
-            <button type="submit" [disabled]="jobForm.invalid">Create Job Application</button>
-        </form>
+<!-- Job Application Form — used inside the Kanban column modal -->
+<div class="px-6 py-5">
+  <form [formGroup]="jobForm" (ngSubmit)="onSubmit()" class="space-y-5" id="job-application-form">
+
+    <!-- Status Display (read-only, showing column name) -->
+    <div class="flex items-center gap-2 px-3 py-2 bg-orange-50 border border-orange-100 rounded-xl">
+      <svg class="w-4 h-4 text-orange-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2" />
+      </svg>
+      <p class="text-xs text-orange-700 font-medium">
+        Status: <span class="font-bold">{{ columnName() }}</span>
+      </p>
     </div>
+
+    <!-- Row 1: Company + Role -->
+    <div class="grid grid-cols-2 gap-4">
+      <div class="space-y-1.5">
+        <label for="job-company" class="block text-xs font-semibold text-slate-600">
+          Company Name <span class="text-orange-500">*</span>
+        </label>
+        <input
+          id="job-company"
+          formControlName="company_name"
+          type="text"
+          placeholder="Google, Amazon..."
+          class="w-full px-3 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-orange-400 text-slate-800 placeholder:text-slate-400 transition-all"
+        />
+      </div>
+      <div class="space-y-1.5">
+        <label for="job-role" class="block text-xs font-semibold text-slate-600">
+          Role / Position <span class="text-orange-500">*</span>
+        </label>
+        <input
+          id="job-role"
+          formControlName="role"
+          type="text"
+          placeholder="Senior Angular Developer"
+          class="w-full px-3 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-orange-400 text-slate-800 placeholder:text-slate-400 transition-all"
+        />
+      </div>
+    </div>
+
+    <!-- Row 2: Job Type + Work Mode -->
+    <div class="grid grid-cols-2 gap-4">
+      <div class="space-y-1.5">
+        <label for="job-type" class="block text-xs font-semibold text-slate-600">Job Type</label>
+        <select
+          id="job-type"
+          formControlName="job_type"
+          class="w-full px-3 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-orange-400 text-slate-700 transition-all appearance-none"
+        >
+          <option value="full-time">Full-Time</option>
+          <option value="part-time">Part-Time</option>
+          <option value="contract">Contract</option>
+          <option value="internship">Internship</option>
+          <option value="freelance">Freelance</option>
+        </select>
+      </div>
+      <div class="space-y-1.5">
+        <label for="job-work-mode" class="block text-xs font-semibold text-slate-600">Work Mode</label>
+        <select
+          id="job-work-mode"
+          formControlName="work_mode"
+          class="w-full px-3 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-orange-400 text-slate-700 transition-all appearance-none"
+        >
+          <option value="remote">Remote</option>
+          <option value="hybrid">Hybrid</option>
+          <option value="on-site">On-Site</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Row 3: Location + Source -->
+    <div class="grid grid-cols-2 gap-4">
+      <div class="space-y-1.5">
+        <label for="job-location" class="block text-xs font-semibold text-slate-600">Location</label>
+        <input
+          id="job-location"
+          formControlName="location"
+          type="text"
+          placeholder="Bangalore, Remote..."
+          class="w-full px-3 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-orange-400 text-slate-800 placeholder:text-slate-400 transition-all"
+        />
+      </div>
+      <div class="space-y-1.5">
+        <label for="job-source" class="block text-xs font-semibold text-slate-600">Application Source</label>
+        <select
+          id="job-source"
+          formControlName="source"
+          class="w-full px-3 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-orange-400 text-slate-700 transition-all appearance-none"
+        >
+          <option value="linkedin">LinkedIn</option>
+          <option value="naukri">Naukri</option>
+          <option value="referral">Referral</option>
+          <option value="company-website">Company Website</option>
+          <option value="internshala">Internshala</option>
+          <option value="cold-apply">Cold Apply</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Row 4: Salary + Currency -->
+    <div class="grid grid-cols-2 gap-4">
+      <div class="space-y-1.5">
+        <label for="job-salary" class="block text-xs font-semibold text-slate-600">Expected Salary</label>
+        <input
+          id="job-salary"
+          formControlName="expected_salary"
+          type="number"
+          placeholder="e.g. 1200000"
+          class="w-full px-3 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-orange-400 text-slate-800 placeholder:text-slate-400 transition-all"
+        />
+      </div>
+      <div class="space-y-1.5">
+        <label for="job-currency" class="block text-xs font-semibold text-slate-600">Currency</label>
+        <select
+          id="job-currency"
+          formControlName="salary_currency"
+          class="w-full px-3 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-orange-400 text-slate-700 transition-all appearance-none"
+        >
+          <option value="INR">INR ₹</option>
+          <option value="USD">USD $</option>
+          <option value="EUR">EUR €</option>
+          <option value="GBP">GBP £</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Row 5: Priority -->
+    <div class="space-y-2">
+      <label class="block text-xs font-semibold text-slate-600">Priority</label>
+      <div class="flex gap-2">
+        <label class="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl border cursor-pointer transition-all text-xs font-semibold"
+          [class]="jobForm.value.priority === 'low' ? 'bg-emerald-50 border-emerald-300 text-emerald-700' : 'bg-slate-50 border-slate-200 text-slate-500 hover:border-slate-300'">
+          <input type="radio" formControlName="priority" value="low" class="hidden" />
+          <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+          Low
+        </label>
+        <label class="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl border cursor-pointer transition-all text-xs font-semibold"
+          [class]="jobForm.value.priority === 'medium' ? 'bg-amber-50 border-amber-300 text-amber-700' : 'bg-slate-50 border-slate-200 text-slate-500 hover:border-slate-300'">
+          <input type="radio" formControlName="priority" value="medium" class="hidden" />
+          <span class="w-2 h-2 rounded-full bg-amber-400"></span>
+          Medium
+        </label>
+        <label class="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl border cursor-pointer transition-all text-xs font-semibold"
+          [class]="jobForm.value.priority === 'high' ? 'bg-rose-50 border-rose-300 text-rose-700' : 'bg-slate-50 border-slate-200 text-slate-500 hover:border-slate-300'">
+          <input type="radio" formControlName="priority" value="high" class="hidden" />
+          <span class="w-2 h-2 rounded-full bg-rose-400"></span>
+          High
+        </label>
+      </div>
+    </div>
+
+    <!-- Row 6: Applied Date + Deadline -->
+    <div class="grid grid-cols-2 gap-4">
+      <div class="space-y-1.5">
+        <label for="job-applied-date" class="block text-xs font-semibold text-slate-600">Applied Date</label>
+        <input
+          id="job-applied-date"
+          formControlName="applied_date"
+          type="date"
+          class="w-full px-3 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-orange-400 text-slate-700 transition-all"
+        />
+      </div>
+      <div class="space-y-1.5">
+        <label for="job-deadline" class="block text-xs font-semibold text-slate-600">Deadline</label>
+        <input
+          id="job-deadline"
+          formControlName="deadline"
+          type="date"
+          class="w-full px-3 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-orange-400 text-slate-700 transition-all"
+        />
+      </div>
+    </div>
+
+    <!-- Row 7: Notes -->
+    <div class="space-y-1.5">
+      <label for="job-notes" class="block text-xs font-semibold text-slate-600">Notes</label>
+      <textarea
+        id="job-notes"
+        formControlName="notes"
+        rows="3"
+        placeholder="Recruiter contact, next steps, referral details..."
+        class="w-full px-3 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-orange-400 text-slate-800 placeholder:text-slate-400 transition-all resize-none"
+      ></textarea>
+    </div>
+
+    <!-- Submit -->
+    <div class="pt-1">
+      <button
+        type="submit"
+        [disabled]="jobForm.invalid"
+        class="w-full py-3 bg-orange-500 hover:bg-orange-600 disabled:opacity-50 disabled:cursor-not-allowed text-white text-sm font-bold rounded-xl transition-all duration-150 active:scale-[0.98] shadow-sm shadow-orange-200 flex items-center justify-center gap-2"
+        id="btn-submit-job"
+      >
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+        </svg>
+        Save Job Application
+      </button>
+    </div>
+
+  </form>
 </div>

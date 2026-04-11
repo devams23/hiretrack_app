@@ -2,11 +2,11 @@ import { Component, inject } from '@angular/core';
 import { FormGroup, FormControl, Validators, ReactiveFormsModule } from '@angular/forms';
 import { AuthService } from '../../../../core/services/auth-service';
 import { AuthRequestData } from '../../models/auth-model';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-signin-form',
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, RouterLink],
   templateUrl: './signin-form.html',
   styleUrl: './signin-form.css',
 })
@@ -15,8 +15,6 @@ export class SigninForm {
   readonly authService = inject(AuthService);
   private router = inject(Router);
   protected signInForm!: FormGroup;
-
-
 
   ngOnInit() {
     this.signInForm = this.createSignInForm();

@@ -1,7 +1,8 @@
 import { inject, Injectable } from '@angular/core';
 import { devenvironment } from '../../../environments/environment.development';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
 import { CreateJobDto, JobApplication } from '../models/job';
+import { Observable } from 'rxjs/internal/Observable';
 
 @Injectable({
   providedIn: 'root',
@@ -13,7 +14,7 @@ export class JobService {
   
 
 
-  createJob(jobData: CreateJobDto) {
-    return this.http.post(`${this.jobsApiUrl}`, jobData);
+  createJob(jobData: CreateJobDto): Observable<JobApplication[]> {
+    return this.http.post<JobApplication[]>(`${this.jobsApiUrl}`, jobData);
   }
 }

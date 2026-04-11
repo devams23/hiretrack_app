@@ -1,22 +1,62 @@
-<div class="board-form-section">
-    <div class="board-form">
-        <form [formGroup]="boardForm" (ngSubmit)="onSubmit()">
-            <div class="form-control">
-                <label for="name">Board Name</label>
-                <input id="name" formControlName="name" type="text" placeholder="Enter board name" />
+<!-- Board Form — used inside the modal popup -->
+<div class="px-6 py-5">
+  <form [formGroup]="boardForm" (ngSubmit)="onSubmit()" class="space-y-4">
 
-            
-            </div>
-            <div class="form-control">
-                <label for="color">Board Color</label>
-                <input id="color" formControlName="color" type="color" />
-            </div>
-            <div class="form-control">
-                <label for="description">Description</label>
-                <textarea id="description" formControlName="description" placeholder="Enter board description"></textarea>
-            </div>
-            <button type="submit" [disabled]="boardForm.invalid">Create Board</button>
-        </form>
-
+    <!-- Board Name -->
+    <div class="space-y-1.5">
+      <label for="board-name" class="block text-sm font-semibold text-slate-700">
+        Board Name <span class="text-orange-500">*</span>
+      </label>
+      <input
+        id="board-name"
+        formControlName="name"
+        type="text"
+        placeholder="e.g. Frontend Roles 2025"
+        class="w-full px-3.5 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-orange-400 text-slate-800 placeholder:text-slate-400 transition-all"
+      />
     </div>
+
+    <!-- Description -->
+    <div class="space-y-1.5">
+      <label for="board-description" class="block text-sm font-semibold text-slate-700">
+        Description <span class="text-slate-400 font-normal">(optional)</span>
+      </label>
+      <textarea
+        id="board-description"
+        formControlName="description"
+        placeholder="A brief note about this board..."
+        rows="3"
+        class="w-full px-3.5 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-orange-400 text-slate-800 placeholder:text-slate-400 transition-all resize-none"
+      ></textarea>
+    </div>
+
+    <!-- Color Picker -->
+    <div class="space-y-1.5">
+      <label for="board-color" class="block text-sm font-semibold text-slate-700">
+        Board Color
+      </label>
+      <div class="flex items-center gap-3">
+        <input
+          id="board-color"
+          formControlName="color"
+          type="color"
+          class="w-10 h-10 rounded-xl border border-slate-200 cursor-pointer bg-transparent p-0.5"
+        />
+        <span class="text-sm text-slate-500">Pick a color to identify this board</span>
+      </div>
+    </div>
+
+    <!-- Submit -->
+    <div class="pt-2 flex gap-3">
+      <button
+        type="submit"
+        [disabled]="boardForm.invalid"
+        class="flex-1 py-2.5 bg-orange-500 hover:bg-orange-600 disabled:opacity-50 disabled:cursor-not-allowed text-white text-sm font-semibold rounded-xl transition-all duration-150 active:scale-[0.98] shadow-sm shadow-orange-200"
+        id="btn-submit-board"
+      >
+        Create Board
+      </button>
+    </div>
+
+  </form>
 </div>

@@ -1,7 +1,8 @@
-import { Component, inject } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { CreateBoardDto } from '../../../core/models/job';
+import { Component, inject, output } from '@angular/core';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Board, CreateBoardDto } from '../../../core/models/job';
 import { BoardService } from '../../../core/services/board-service';
+import { HttpResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-board-form',
@@ -13,6 +14,7 @@ export class BoardForm {
 
   protected boardForm!: FormGroup;
   private boardService = inject(BoardService);
+  boardCreated = output<Board>();
 
   ngOnInit() {
     this.initializeForm();
@@ -26,26 +28,26 @@ export class BoardForm {
         description: this.boardForm.value.description
       }
       this.boardService.createBoard(boardData).subscribe({
-        next: (response) => {
-          console.log('Board created successfully:', response);
-          // You can add logic here to navigate to the board list or reset the form
+        next: (response: Board[]) => {
+          if(response){
+            const boardCreated = response[0];
+            this.boardCreated.emit(boardCreated);
+          }
+          this.boardForm.reset({ color: '#f97316' });
         },
         error: (error) => {
           console.error('Error creating board:', error);
-          // Handle error, show notification, etc.
         }
       });
-      // Here you can add logic to send the form data to your backend or perform other actions
     } else {
       console.log('Form is invalid');
     }
   }
   initializeForm() {
     this.boardForm = new FormGroup({
-
-      name : new FormControl(''),
+      name : new FormControl('', [Validators.required]),
       description : new FormControl(''),
-      color: new FormControl('#ffffff')
+      color: new FormControl('#f97316')
     });
   }
 }

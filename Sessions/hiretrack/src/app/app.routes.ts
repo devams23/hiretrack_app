@@ -8,7 +8,6 @@ export const routes: Routes = [
     pathMatch: 'full',
   },
   {
-    
     path: 'auth',
     children: [
       {
@@ -24,27 +23,20 @@ export const routes: Routes = [
     ],
   },
   {
-    path: 'boards',
-    loadComponent: () =>
-      import('./features/boards/boards-list/boards-list').then((m) => m.BoardsList),
+    path: '', 
+    loadComponent: () => import('./shared/layout/layout').then((m) => m.Layout),
     canActivate: [authGuard],
+    children: [
+      {
+        path: 'boards',
+        loadComponent: () =>
+          import('./features/boards/boards-list/boards-list').then((m) => m.BoardsList),
+      },
+      {
+        path: 'boards/:board_id',
+        loadComponent: () =>
+          import('./features/kanban-board-details/board-view/board-view').then((m) => m.BoardView),
+      },
+    ],
   },
-  {
-    path: 'boards/create',
-    loadComponent: () => import('./features/boards/board-form/board-form').then((m) => m.BoardForm),
-    canActivate: [authGuard],
-  },
-  {
-    path: 'boards/:board_id',
-    loadComponent: () =>
-      import('./features/kanban-board-details/board-view/board-view').then((m) => m.BoardView),
-    canActivate: [authGuard],
-  },
-  {
-    path: 'boards/:board_id/jobs/create',
-    loadComponent: () =>
-      import('./features/job-application/job-form/job-form').then((m) => m.JobForm),
-    canActivate: [authGuard],
-  }
-
 ];

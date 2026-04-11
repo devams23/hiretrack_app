@@ -2,10 +2,11 @@ import { Component, inject, signal } from '@angular/core';
 import { Board } from '../../../core/models/job';
 import { BoardService } from '../../../core/services/board-service';
 import { Router } from '@angular/router';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-boards-list',
-  imports: [],
+  imports: [DatePipe],
   templateUrl: './boards-list.html',
   styleUrl: './boards-list.css',
 })
@@ -13,12 +14,15 @@ export class BoardsList {
   boardsList = signal<Board[]>([]);
   private boardService = inject(BoardService);
   private router = inject(Router);
+
   navigateToBoard(boardid: string) {
     this.router.navigate(['/boards', boardid]);
   }
+
   navigateToCreateBoard() {
     this.router.navigate(['/boards/create']);
   }
+
   ngOnInit() {
     this.boardService.getAllBoards().subscribe({
       next: (boards) => {
@@ -26,7 +30,6 @@ export class BoardsList {
       },
       error: (error) => {
         console.error('Error fetching boards:', error);
-        // Handle error, show notification, etc.
       }
     });
   }

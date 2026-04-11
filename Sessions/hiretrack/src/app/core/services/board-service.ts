@@ -5,6 +5,11 @@ import { devenvironment } from '../../../environments/environment.development';
 import { Board, CreateBoardDto } from '../models/job';
 import { Observable } from 'rxjs';
 
+
+
+interface CreateBoardDtoWithUserId extends CreateBoardDto {
+  user_id: string | undefined;
+}
 @Injectable({
   providedIn: 'root',
 })
@@ -21,10 +26,8 @@ export class BoardService {
 
   } 
 
-  createBoard(board:CreateBoardDto): Observable<HttpResponse<Board>> {
-    const user_board = {...board, user_id: this.currentUser?.userId}
-    return this.http.post<Board>(this.boardsApi, user_board , {
-      observe: 'response',
-    })
+  createBoard(board:CreateBoardDto): Observable<Board[]> {
+    const user_board:CreateBoardDtoWithUserId = {...board, user_id: this.currentUser?.userId}
+    return this.http.post<Board[]>(this.boardsApi, user_board )
   } 
 }
