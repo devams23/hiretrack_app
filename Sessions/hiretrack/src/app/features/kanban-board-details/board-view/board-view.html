@@ -6,8 +6,9 @@
     <div class="flex items-center justify-between">
       <div>
         <h1 class="text-xl font-bold text-slate-800">Kanban Board</h1>
+        <p class="text-xs text-slate-400 mt-0.5">{{ columns().length }} columns · Drag cards between columns to update status</p>
       </div>
-      <!-- Stage Pill Counters -->
+      <!-- Stage Pill Counters
       <div class="hidden sm:flex items-center gap-2 flex-wrap">
         @for (col of columns(); track col.id; let i = $index) {
           <span
@@ -19,7 +20,7 @@
             <span class="ml-0.5 font-bold">{{ col.job_applications.length }}</span>
           </span>
         }
-      </div>
+      </div> -->
     </div>
   </div>
 
@@ -28,7 +29,6 @@
     <div class="flex gap-4 p-5 h-full items-start min-w-max">
 
       @if (columns().length === 0) {
-        <!-- Empty State -->
         <div class="flex flex-col items-center justify-center w-full py-24 text-center min-w-[400px]">
           <div class="w-16 h-16 rounded-2xl bg-orange-50 flex items-center justify-center mb-4">
             <svg class="w-8 h-8 text-orange-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
@@ -42,7 +42,15 @@
 
       @for (column of columns(); track column.id; let i = $index) {
         <!-- ── Kanban Column ── -->
-        <div class="flex flex-col w-72 shrink-0 rounded-2xl bg-slate-100/70 overflow-hidden h-[calc(100vh-200px)]">
+        <div
+          class="flex flex-col w-72 shrink-0 rounded-2xl overflow-hidden h-[calc(100vh-200px)] transition-all duration-200"
+          [class]="dragOverColumnId() === column.id
+            ? 'bg-orange-50'
+            : 'bg-slate-100/70'"
+          (dragover)="onDragOver($event, column.id)"
+          (dragleave)="onDragLeave($event, column.id)"
+          (drop)="onDrop($event, column.id)"
+        >
 
           <!-- Column Header -->
           <div class="flex items-center justify-between px-4 py-3 shrink-0">
@@ -52,9 +60,8 @@
                 [style.background]="column.color || '#94a3b8'"
               ></span>
               <h3 class="text-sm font-bold text-slate-700">{{ column.name }}</h3>
-              <!-- Job Count Badge -->
               <span
-                class="inline-flex items-center justify-center w-5 h-5 rounded-full text-[10px] font-bold text-white"
+                class="inline-flex items-center justify-center w-7 h-5 rounded-full text-[10px] font-bold text-white"
                 [style.background]="column.color || '#94a3b8'"
               >
                 {{ column.job_applications.length }}
@@ -73,12 +80,13 @@
             </button>
           </div>
 
+
+
           <!-- Job Cards Scroll Area -->
           <div class="flex-1 overflow-y-auto px-3 pb-3 space-y-3">
 
-            @if (column.job_applications.length === 0) {
+            @if (column.job_applications.length === 0 && dragOverColumnId() !== column.id) {
               <div class="flex flex-col items-center justify-center py-8 text-center">
-
                 <p class="text-xs text-slate-400">No jobs here yet</p>
                 <button
                   (click)="openJobModal(column.id, column.name)"
@@ -92,12 +100,30 @@
             @for (job of column.job_applications; track job.id) {
               <!-- ── Job Card ── -->
               <div
-                class="group bg-white rounded-xl shadow-sm border border-slate-100 p-4 hover:shadow-md hover:border-slate-200 transition-all duration-200 cursor-pointer"
+                class="group relative bg-white rounded-xl shadow-sm border border-slate-100 p-4 hover:shadow-md hover:border-slate-200 transition-all duration-200 cursor-grab active:cursor-grabbing"
                 [id]="'job-card-' + job.id"
+                draggable="true"
+                (dragstart)="onDragStart($event, job, column.id)"
+                (dragend)="onDragEnd($event)"
+                (click)="openJobDetail(job)"
               >
+
+                <!-- ── Delete button (top-right, only on hover) ── -->
+                <button
+                  (click)="promptDeleteJob($event, job)"
+                  class="absolute top-2 right-2 w-6 h-6 rounded-lg flex items-center justify-center text-slate-300 hover:bg-rose-50 hover:text-rose-500 transition-all duration-150
+                         opacity-0 group-hover:opacity-100 scale-75 group-hover:scale-100"
+                  [id]="'btn-delete-job-' + job.id"
+                  title="Delete job"
+                >
+                  <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                  </svg>
+                </button>
+
                 <!-- Source Tag -->
                 @if (job.source) {
-                  <div class="mb-2">
+                  <div class="mb-2 pr-5">
                     <span class="inline-block px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider rounded bg-orange-50 text-orange-500">
                       {{ job.source }}
                     </span>
@@ -105,7 +131,7 @@
                 }
 
                 <!-- Role + Company -->
-                <h4 class="text-sm font-bold text-slate-800 leading-tight mb-0.5 group-hover:text-orange-500 transition-colors">
+                <h4 class="text-sm font-bold text-slate-800 leading-tight mb-0.5 group-hover:text-orange-500 transition-colors pr-5">
                   {{ job.role }}
                 </h4>
                 <p class="text-xs text-slate-500 font-medium mb-3">{{ job.company_name }}</p>
@@ -142,7 +168,6 @@
                     <span class="w-1.5 h-1.5 rounded-full" [class]="getPriorityDot(job.priority)"></span>
                     {{ job.priority | titlecase }}
                   </span>
-
                   <div class="flex items-center gap-2">
                     @if (job.expected_salary) {
                       <span class="text-[10px] text-slate-400 font-medium">
@@ -166,6 +191,13 @@
                     <span class="text-[10px] text-slate-400">Applied {{ job.applied_date | date: 'MMM d' }}</span>
                   </div>
                 }
+
+                <!-- Drag handle hint -->
+                <div class="absolute bottom-2 right-2 opacity-0 group-hover:opacity-30 transition-opacity">
+                  <svg class="w-3 h-3 text-slate-400" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M8 6a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm0 6a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm0 6a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm8-12a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm0 6a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm0 6a2 2 0 1 1-4 0 2 2 0 0 1 4 0z"/>
+                  </svg>
+                </div>
               </div>
             }
 
@@ -188,12 +220,11 @@
       (click)="$event.stopPropagation()"
       id="job-modal"
     >
-      <!-- Modal Header -->
       <div class="flex items-center justify-between px-6 py-4 border-b border-slate-100 sticky top-0 bg-white z-10">
         <div>
           <h2 class="text-lg font-bold text-slate-800">Add Job Application</h2>
           <p class="text-xs text-slate-400 mt-0.5">
-            Adding to column:
+            Adding to:
             <span class="font-semibold text-orange-500">{{ selectedColumnName() }}</span>
           </p>
         </div>
@@ -207,14 +238,23 @@
           </svg>
         </button>
       </div>
-
-      <!-- Job Form Component -->
       <app-job-form
         [columnId]="selectedColumnId()"
         [boardId]="boardId()"
         [columnName]="selectedColumnName()"
-        (jobCreated)="closeJobModalAfterJobCreation($event)"  
+        (jobCreated)="closeJobModalAfterJobCreation($event)"
       ></app-job-form>
     </div>
   </div>
+}
+
+<!-- ───────────── DELETE CONFIRM DIALOG ───────────── -->
+@if (jobToDelete()) {
+  <app-confirm-dialog
+    title="Delete Job Application?"
+    [message]="'Remove \'' + jobToDelete()!.role + '\' at ' + jobToDelete()!.company_name + '? This cannot be undone.'"
+    confirmLabel="Delete"
+    (confirmed)="confirmDelete()"
+    (cancelled)="cancelDelete()"
+  ></app-confirm-dialog>
 }

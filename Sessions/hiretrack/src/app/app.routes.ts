@@ -37,6 +37,11 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./features/kanban-board-details/board-view/board-view').then((m) => m.BoardView),
       },
+      {
+        path: 'boards/:board_id/jobs/:job_id',
+        loadComponent: () =>
+          import('./features/job-application/job-detail/job-detail').then((m) => m.JobDetail),
+      },
     ],
   },
 ];

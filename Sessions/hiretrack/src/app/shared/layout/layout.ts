@@ -29,14 +29,16 @@ export class Layout {
       error: (err) => console.error(err),
     });
   }
-
+  searchJobs(event:Event){
+    const searchTerm = (event.target as HTMLInputElement).value;
+    console.log(searchTerm);
+  }
   openBoardModal() {
     this.showBoardModal.set(true);
   }
 
   closeBoardModal() {
     this.showBoardModal.set(false);
-    // Reload boards after creating one
 
   }
   closeBoardModelAndNavigate(board:Board){

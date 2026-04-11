@@ -14,9 +14,11 @@ export class JobForm {
   boardId = input<string>('');
   columnId = input<string>('');
   columnName = input<string>('');
-  
   jobCreated = output<JobApplication>();
+  private jobService = inject(JobService);
+  protected jobForm!: FormGroup;
 
+  
   onSubmit() {
     if (this.jobForm.valid) {
       const jobData: CreateJobDto = {
@@ -51,10 +53,6 @@ export class JobForm {
       console.log('Form is invalid');
     }
   }
-
-  private jobService = inject(JobService);
-  protected jobForm!: FormGroup;
-
   ngOnInit() {
     this.jobForm = this.getJobForm();
   }
