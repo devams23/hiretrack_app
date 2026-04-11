@@ -1,0 +1,32 @@
+<div class="job-form-section">
+    <div class="job-form">
+        <form [formGroup]="jobForm" (ngSubmit)="onSubmit()">
+            <div class="form-control">
+                <label for="company_name">Company Name</label>
+                <input id="company_name" formControlName="company_name" type="text" placeholder="Enter company name" />
+            </div>
+            <div class="form-control">
+                <label for="role">Role</label>
+                <input id="role" formControlName="role" type="text" placeholder="Enter role" />
+            </div>
+            <div class="form-control">
+                <label for="expected_salary">Expected Salary</label>
+                <input id="expected_salary" formControlName="expected_salary" type="number" placeholder="Enter expected salary" />
+            </div>
+            <div class="form-control">
+                <label for="salary_currency">Salary Currency</label>
+                <input id="salary_currency" formControlName="salary_currency" type="text" placeholder="Enter salary currency (e.g., USD)" />
+            </div>
+            <div class="form-control">
+                <label for="priority">Priority</label>
+                <select id="priority" formControlName="priority">
+                    <option value="">Select priority</option>
+                    <option value="low">Low</option>
+                    <option value="medium">Medium</option>
+                    <option value="high">High</option>
+                </select>
+            </div>
+            <button type="submit" [disabled]="jobForm.invalid">Create Job Application</button>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,21 @@
+<div class="boards-list-section">
+
+    <div class="boards-list-header">
+        <h2>Your Boards</h2>
+        <button (click)="navigateToCreateBoard()">Create New Board</button>
+    </div>
+
+    <div class="boards-list">
+        @for (board of boardsList(); track board.id) {
+        <div class="board-card" (click)="navigateToBoard(board.id)">
+
+            <div class="board-color" [style.background]="board.color"></div>
+            <div class="board-info">
+                <h3>{{ board.name }}</h3>
+                <p>{{ board.description }}</p>
+            </div>
+        </div>
+    }
+    </div>
+
+</div>

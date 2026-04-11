@@ -12,13 +12,16 @@ import { SupabaseSignInResponse, SupabaseSignUpResponse } from '../models/supaba
 })
 export class AuthService {
   private authUrl = devenvironment.supabaseUrl + '/auth/v1';
-
   private currentUserSubject = new BehaviorSubject<UserModel | null>(null);
   public currentUser$ = this.currentUserSubject.asObservable();
   private router = inject(Router);
   isAuthenticated = signal<boolean>(false);
   private http = inject(HttpClient);
 
+  constructor() {
+this.autoLogin();
+
+  }
   passwordSignUp(signupRequestData: AuthRequestData) {
     return this.http.post<SupabaseSignUpResponse>(`${this.authUrl}/signup`, signupRequestData).pipe(
       tap(() => {
@@ -29,7 +32,7 @@ export class AuthService {
 
   passwordSignIn(signinRequestData: AuthRequestData): Observable<SupabaseSignInResponse> {
     return this.http
-      .post<SupabaseSignInResponse>(`${this.authUrl}/jlsjlksjdla/token?grant_type=password`, signinRequestData)
+      .post<SupabaseSignInResponse>(`${this.authUrl}/token?grant_type=password`, signinRequestData)
       .pipe(
         tap((response) => {
           this.handleLoginSuccess(response);
@@ -47,7 +50,9 @@ export class AuthService {
   Handles the successful login response ,
   converts it to UserModel and updates the current user */
   handleLoginSuccess(response: SupabaseSignInResponse) {
+    console.log("LOGIN SUCCESS...")
     const userData: UserModel = {
+      userId: response.user.id,
       accessToken: response.access_token,
       expiresIn: response.expires_in,
       expiresAt: response.expires_at,
@@ -57,6 +62,23 @@ export class AuthService {
 
     this.currentUserSubject.next(userData);
     this.isAuthenticated.set(true);
+    console.log("ADDING USER DATA IN LOCAL STORAGE..")
     localStorage.setItem('currentUser', JSON.stringify(userData));
+  }
+
+  getCurrentUser(): UserModel | null {
+    return this.currentUserSubject.value;
+  }
+  autoLogin() {
+    const storedUser = localStorage.getItem('currentUser');
+    if (storedUser) {
+      console.log("USER IS LOGGED IN...")
+      const userData: UserModel = JSON.parse(storedUser);
+      this.currentUserSubject.next(userData);
+      this.isAuthenticated.set(true);
+    }
+    else{
+      this.router.navigate(['/auth/signin']);
+    }
   }
 }

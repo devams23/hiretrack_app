@@ -1,0 +1,22 @@
+<div class="board-form-section">
+    <div class="board-form">
+        <form [formGroup]="boardForm" (ngSubmit)="onSubmit()">
+            <div class="form-control">
+                <label for="name">Board Name</label>
+                <input id="name" formControlName="name" type="text" placeholder="Enter board name" />
+
+            
+            </div>
+            <div class="form-control">
+                <label for="color">Board Color</label>
+                <input id="color" formControlName="color" type="color" />
+            </div>
+            <div class="form-control">
+                <label for="description">Description</label>
+                <textarea id="description" formControlName="description" placeholder="Enter board description"></textarea>
+            </div>
+            <button type="submit" [disabled]="boardForm.invalid">Create Board</button>
+        </form>
+
+    </div>
+</div>

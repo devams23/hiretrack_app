@@ -1,0 +1,23 @@
+<div class="kanban-column-section">
+    @if (columns()) {
+    <div class="kanban-columns">
+        @for (column of columns(); track column.id) {
+     
+            <h3>{{ column.name }}</h3>
+            <div class="kanban-jobs">
+            <app-job-form [columnId]="column.id" [boardId]="boardId()"></app-job-form>
+            @for (job of column.job_applications; track job.id) {
+                <div class="kanban-job-card">
+                    <h4>{{ job.role }}</h4>
+                    <p>{{ job.company_name }}</p>
+                    <p>Expected Salary: {{ job.expected_salary }} {{ job.salary_currency }}</p>
+                    <p>Priority: {{ job.priority }}</p> 
+                </div>
+                }
+            
+        </div>
+    }
+    </div>
+    }
+    
+</div>
