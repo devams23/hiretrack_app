@@ -11,6 +11,7 @@ import {
 } from '../../../core/models/job';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { DatePipe, TitleCasePipe, DecimalPipe, Location } from '@angular/common';
+import { createLinkedSignal } from '@angular/core/primitives/signals';
 
 @Component({
   selector: 'app-job-detail',
@@ -27,7 +28,7 @@ export class JobDetail {
   job = signal<JobApplication | null>(null);
   isEditMode = signal<boolean>(false);
   isSaving = signal<boolean>(false);
-
+  isLoding = signal<boolean> (false);
   editForm!: FormGroup;
 
   readonly jobTypes: JobType[] = ['full-time', 'part-time', 'contract', 'internship', 'freelance'];
@@ -40,14 +41,20 @@ export class JobDetail {
   ngOnInit() {
     const jobId = this.route.snapshot.paramMap.get('job_id');
     if (jobId) {
+      this.isLoding.set(true);
       this.jobService.getJobById(jobId).subscribe({
         next: (jobs) => {
           if (jobs.length) {
+            console.log('JOBs found', jobs.length);
             this.job.set(jobs[0]);
             this.buildForm(jobs[0]);
           }
+          this.isLoding.set(false);
         },
-        error: (err) => console.error(err),
+        error: (err) => {
+          console.error(err);
+          this.isLoding.set(false);
+        },
       });
     }
   }

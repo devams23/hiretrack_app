@@ -142,7 +142,8 @@
             placeholder="Search jobs, companies..."
             class="w-full pl-9 pr-4 py-2 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-orange-400 text-slate-700 placeholder:text-slate-400 transition-all"
             id="header-search"
-            (change)="searchJobs($event)"
+            (input)="searchJobs($event.target.value)"
+            
           />
         </div>
       </div>

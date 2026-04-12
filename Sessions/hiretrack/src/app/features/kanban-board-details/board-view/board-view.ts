@@ -1,16 +1,18 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ColumnService } from '../../../core/services/column-service';
 import { JobService } from '../../../core/services/job-service';
 import { JobApplication, KanbanColumn } from '../../../core/models/job';
 import { JobForm } from '../../job-application/job-form/job-form';
-import { DatePipe, TitleCasePipe, DecimalPipe } from '@angular/common';
+import { TitleCasePipe, DecimalPipe } from '@angular/common';
 import { ConfirmDialog } from '../../../shared/confirm-dialog/confirm-dialog';
-import { createLinkedSignal } from '@angular/core/primitives/signals';
+import { RelativeDatePipe } from '../../../shared/pipes/relative-date/relative-date-pipe';
+import { JobCountPipe } from '../../../shared/pipes/job-count/job-count-pipe';
+import { SearchService } from '../../../shared/services/search';
 
 @Component({
   selector: 'app-board-view',
-  imports: [JobForm, DatePipe, TitleCasePipe, DecimalPipe, ConfirmDialog],
+  imports: [JobForm, TitleCasePipe, DecimalPipe, ConfirmDialog, RelativeDatePipe, JobCountPipe],
   templateUrl: './board-view.html',
   styleUrl: './board-view.css',
 })
@@ -20,9 +22,29 @@ export class BoardView {
   private router = inject(Router);
   private columnService = inject(ColumnService);
   private jobService = inject(JobService);
+  protected searchService = inject(SearchService);
 
   protected boardId = signal<string>('');
   protected columns = signal<KanbanColumn[]>([]);
+
+  /**
+   * Derived signal — filters columns' job_applications by the debounced
+   * search query (company_name OR role, case-insensitive).
+   * When query is empty, returns columns as-is. Zero extra API calls.
+   */
+  protected filteredColumns = computed<KanbanColumn[]>(() => {
+    const query = this.searchService.filteredQuery();
+    const cols = this.columns();
+    if (!query) return cols;
+    return cols.map((col) => ({
+      ...col,
+      job_applications: col.job_applications.filter(
+        (job) =>
+          job.company_name.toLowerCase().includes(query) ||
+          job.role.toLowerCase().includes(query),
+      ),
+    }));
+  });
 
   // Job creation modal
   protected showJobModal = signal<boolean>(false);

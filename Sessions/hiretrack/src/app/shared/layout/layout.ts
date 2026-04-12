@@ -5,6 +5,7 @@ import { BoardService } from '../../core/services/board-service';
 import { Board } from '../../core/models/job';
 import { BoardForm } from '../../features/boards/board-form/board-form';
 import { AsyncPipe } from '@angular/common';
+import { SearchService } from '../services/search';
 
 @Component({
   selector: 'app-layout',
@@ -16,6 +17,7 @@ export class Layout {
   protected authService = inject(AuthService);
   private boardService = inject(BoardService);
   private router = inject(Router);
+  private searchService = inject(SearchService);
 
   boards = signal<Board[]>([]);
   showBoardModal = signal<boolean>(false);
@@ -29,9 +31,8 @@ export class Layout {
       error: (err) => console.error(err),
     });
   }
-  searchJobs(event:Event){
-    const searchTerm = (event.target as HTMLInputElement).value;
-    console.log(searchTerm);
+  searchJobs(searchQuery: string) {
+    this.searchService.push(searchQuery);
   }
   openBoardModal() {
     this.showBoardModal.set(true);
