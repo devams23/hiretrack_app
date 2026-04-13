@@ -5,11 +5,12 @@ import { inject } from '@angular/core';
 export const authGuard: CanActivateFn = (route, state) => {
   
   const authService = inject(AuthService);
-  const router = inject(Router);
 
-  if (authService.isAuthenticated()) {
+  if (authService.isAuthenticated() && authService.isTokenValid()) {
     return true;
   } else {
-    return router.createUrlTree(['/auth/signin'], { queryParams: { returnUrl: state.url } });
+    authService.signOut();
+    console.log("TOKEN IS EXPIRED... IN GUARD")
+    return false;
   }
 };

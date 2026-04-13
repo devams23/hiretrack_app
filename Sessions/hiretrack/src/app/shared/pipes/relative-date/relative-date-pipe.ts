@@ -4,7 +4,6 @@ import { Pipe, PipeTransform } from '@angular/core';
  * RelativeDatePipe
  * Transforms a date string/Date into a human-readable relative string.
  * Examples: "just now", "3 mins ago", "2 hours ago", "yesterday", "4 days ago", "3 months ago"
- *
  */
 @Pipe({
   name: 'relativeDate',

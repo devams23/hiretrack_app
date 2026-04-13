@@ -46,6 +46,7 @@ this.autoLogin();
     localStorage.removeItem('currentUser');
     this.router.navigate(['/auth/signin']);
   }
+
   /*
   Handles the successful login response ,
   converts it to UserModel and updates the current user */
@@ -70,15 +71,27 @@ this.autoLogin();
     return this.currentUserSubject.value;
   }
   autoLogin() {
-    const storedUser = localStorage.getItem('currentUser');
-    if (storedUser) {
+    const storedUser = localStorage.getItem('currentUser') || "";
+    if (storedUser && this.isTokenValid()) {
       console.log("USER IS LOGGED IN...")
       const userData: UserModel = JSON.parse(storedUser);
       this.currentUserSubject.next(userData);
       this.isAuthenticated.set(true);
     }
     else{
-      this.router.navigate(['/auth/signin']);
+      this.signOut();
     }
+  }
+
+  isTokenValid():boolean{
+    const storedUser = localStorage.getItem('currentUser') ?? "";
+    if(storedUser){
+      const userData: UserModel = JSON.parse(storedUser);
+      const now = new Date();
+      const expiresAt = new Date(userData.expiresAt);
+      console.log(expiresAt)
+      return now < expiresAt;
+    }
+    return false;
   }
 }

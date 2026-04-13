@@ -120,7 +120,7 @@
 
                 <!-- ── Delete button (top-right, only on hover) ── -->
                 <button
-                  (click)="promptDeleteJob($event, job)"
+                  (click)="promptDeleteJob( job)"
                   class="absolute top-2 right-2 w-6 h-6 rounded-lg flex items-center justify-center text-slate-300 hover:bg-rose-50 hover:text-rose-500 transition-all duration-150
                          opacity-0 group-hover:opacity-100 scale-75 group-hover:scale-100"
                   [id]="'btn-delete-job-' + job.id"

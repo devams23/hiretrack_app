@@ -7,9 +7,11 @@ export const authHeadersInterceptor: HttpInterceptorFn = (req, next) => {
   const authService = inject(AuthService);
     const currentTime = Math.floor(Date.now() / 1000);
   
-  if (localStorage.getItem('currentUser') && JSON.parse(localStorage.getItem('currentUser')!).expiresAt < currentTime) {
-    console.warn('Access token has expired. Please log in again.');
+  if(!authService.isTokenValid()){
     authService.signOut();
+    console.log('TOKEN IS EXPIRED...');
+    
+    return next(req);
   }
 
   const token = devenvironment.supabaseAnonKey;

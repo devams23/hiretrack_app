@@ -11,10 +11,8 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
   providedIn: 'root',
 })
 export class SearchService {
-  /** Raw input stream — layout pushes here on every keystroke */
-  readonly searchInput$ = new Subject<string>();
 
-  /** Debounced, deduplicated query — board view reads this signal */
+  readonly searchInput$ = new Subject<string>();
   readonly filteredQuery = signal<string>('');
 
   constructor() {

@@ -35,7 +35,9 @@ export class BoardView {
   protected filteredColumns = computed<KanbanColumn[]>(() => {
     const query = this.searchService.filteredQuery();
     const cols = this.columns();
-    if (!query) return cols;
+    if (!query){
+      return cols
+    };
     return cols.map((col) => ({
       ...col,
       job_applications: col.job_applications.filter(
@@ -178,8 +180,7 @@ export class BoardView {
   }
 
   // ─── Delete job ─────────────────────────────────────────────────
-  promptDeleteJob(event: MouseEvent, job: JobApplication) {
-    event.stopPropagation(); // don't navigate to detail
+  promptDeleteJob(job: JobApplication) {
     this.jobToDelete.set(job);
   }
 

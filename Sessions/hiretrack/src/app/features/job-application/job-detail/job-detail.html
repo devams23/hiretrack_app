@@ -1,21 +1,21 @@
 <!-- Job Detail Page -->
 <div class="min-h-full bg-slate-50 p-5 lg:p-8">
 
-  @if (isLoding()) {
-    <!-- Loading Skeleton -->
+  <!-- ── Loading skeleton ── -->
+  @if (isLoading()) {
     <div class="max-w-3xl mx-auto space-y-4 animate-pulse">
       <div class="h-8 w-48 bg-slate-200 rounded-xl"></div>
       <div class="h-64 bg-white rounded-2xl border border-slate-100"></div>
     </div>
   }
 
+  <!-- ── Job found ── -->
   @if (job(); as j) {
     <div class="max-w-3xl mx-auto">
 
-      <!-- Top Bar: Back + Toggle -->
+      <!-- Top Bar: Back + Read/Edit Toggle -->
       <div class="flex items-center justify-between mb-6">
 
-        <!-- Back Button -->
         <button
           (click)="goBack()"
           class="flex items-center gap-2 text-sm font-semibold text-slate-500 hover:text-slate-700 transition-colors"
@@ -27,19 +27,20 @@
           Back to Board
         </button>
 
-        <!-- Read / Edit Sliding Toggle -->
+        <!-- Sliding Read / Edit toggle -->
         <div
-          class="relative flex items-center bg-slate-100 rounded-xl p-1 gap-1 cursor-pointer select-none"
+          class="relative flex items-center bg-slate-100 rounded-xl p-1 cursor-pointer select-none"
           (click)="toggleEditMode()"
           id="btn-toggle-mode"
-          title="{{ isEditMode() ? 'Click to cancel edit' : 'Click to edit' }}"
+          [title]="isEditMode() ? 'Click to cancel edit' : 'Click to edit'"
         >
-          <!-- Sliding pill -->
+          <!-- Animated pill -->
           <span
-            class="absolute top-1 h-7 w-[calc(50%-2px)] rounded-lg bg-white shadow-sm transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)]"
-            [class.left-1]="!isEditMode()"
-            [class.left-calc(50%+1px)]="isEditMode()"
+            class="absolute top-1 bottom-1 w-[calc(50%-2px)] rounded-lg bg-white shadow-sm transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)]"
+            [style.left]="isEditMode() ? 'calc(50% + 2px)' : '4px'"
           ></span>
+
+          <!-- Read label -->
           <span
             class="relative z-10 flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold transition-colors duration-200"
             [class.text-slate-800]="!isEditMode()"
@@ -51,6 +52,8 @@
             </svg>
             Read
           </span>
+
+          <!-- Edit label -->
           <span
             class="relative z-10 flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold transition-colors duration-200"
             [class.text-orange-600]="isEditMode()"
@@ -68,7 +71,7 @@
       @if (!isEditMode()) {
         <div class="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
 
-          <!-- Header Section -->
+          <!-- Header -->
           <div class="px-6 py-5 border-b border-slate-100">
             <div class="flex items-start justify-between gap-4">
               <div>
@@ -95,7 +98,6 @@
 
           <!-- Details Grid -->
           <div class="p-6 grid grid-cols-2 sm:grid-cols-3 gap-x-6 gap-y-5">
-
             <div class="space-y-0.5">
               <p class="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Job Type</p>
               <p class="text-sm font-semibold text-slate-700">{{ j.job_type || '—' }}</p>
@@ -113,9 +115,7 @@
               <p class="text-sm font-semibold text-slate-700">
                 @if (j.expected_salary) {
                   {{ j.salary_currency }} {{ j.expected_salary | number }}
-                } @else {
-                  —
-                }
+                } @else { — }
               </p>
             </div>
             <div class="space-y-0.5">
@@ -126,7 +126,6 @@
               <p class="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Deadline</p>
               <p class="text-sm font-semibold text-slate-700">{{ j.deadline ? (j.deadline | date:'MMM d, y') : '—' }}</p>
             </div>
-
             @if (j.job_url) {
               <div class="col-span-2 sm:col-span-3 space-y-0.5">
                 <p class="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Job URL</p>
@@ -158,7 +157,7 @@
         </div>
       }
 
-      <!-- ─────────── EDIT MODE ─────────── -->
+      <!-- ─────────── EDIT MODE — reuses the shared JobForm component ─────────── -->
       @if (isEditMode()) {
         <div class="bg-white rounded-2xl border border-orange-200 shadow-sm overflow-hidden">
           <div class="px-6 py-4 border-b border-slate-100 bg-orange-50/50">
@@ -166,154 +165,22 @@
             <p class="text-xs text-slate-400 mt-0.5">Make your changes below, then click Save.</p>
           </div>
 
-          <form [formGroup]="editForm" (ngSubmit)="onSave()" class="p-6 space-y-5" id="edit-job-form">
-
-            <!-- Row 1: Company + Role -->
-            <div class="grid grid-cols-2 gap-4">
-              <div class="space-y-1.5">
-                <label class="block text-xs font-semibold text-slate-600">Company Name <span class="text-orange-500">*</span></label>
-                <input formControlName="company_name" type="text" placeholder="Company"
-                  class="w-full px-3 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-orange-400 text-slate-800 placeholder:text-slate-400 transition-all" />
-              </div>
-              <div class="space-y-1.5">
-                <label class="block text-xs font-semibold text-slate-600">Role <span class="text-orange-500">*</span></label>
-                <input formControlName="role" type="text" placeholder="Role"
-                  class="w-full px-3 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-orange-400 text-slate-800 placeholder:text-slate-400 transition-all" />
-              </div>
-            </div>
-
-            <!-- Row 2: Job Type + Work Mode -->
-            <div class="grid grid-cols-2 gap-4">
-              <div class="space-y-1.5">
-                <label class="block text-xs font-semibold text-slate-600">Job Type</label>
-                <select formControlName="job_type"
-                  class="w-full px-3 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-orange-400 text-slate-700 appearance-none">
-                  @for (t of jobTypes; track t) { <option [value]="t">{{ t }}</option> }
-                </select>
-              </div>
-              <div class="space-y-1.5">
-                <label class="block text-xs font-semibold text-slate-600">Work Mode</label>
-                <select formControlName="work_mode"
-                  class="w-full px-3 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-orange-400 text-slate-700 appearance-none">
-                  @for (m of workModes; track m) { <option [value]="m">{{ m }}</option> }
-                </select>
-              </div>
-            </div>
-
-            <!-- Row 3: Location + Source -->
-            <div class="grid grid-cols-2 gap-4">
-              <div class="space-y-1.5">
-                <label class="block text-xs font-semibold text-slate-600">Location</label>
-                <input formControlName="location" type="text" placeholder="City or Remote"
-                  class="w-full px-3 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-orange-400 text-slate-800 placeholder:text-slate-400 transition-all" />
-              </div>
-              <div class="space-y-1.5">
-                <label class="block text-xs font-semibold text-slate-600">Source</label>
-                <select formControlName="source"
-                  class="w-full px-3 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-orange-400 text-slate-700 appearance-none">
-                  @for (s of sources; track s) { <option [value]="s">{{ s }}</option> }
-                </select>
-              </div>
-            </div>
-
-            <!-- Row 4: Salary + Currency -->
-            <div class="grid grid-cols-2 gap-4">
-              <div class="space-y-1.5">
-                <label class="block text-xs font-semibold text-slate-600">Expected Salary</label>
-                <input formControlName="expected_salary" type="number" placeholder="e.g. 1200000"
-                  class="w-full px-3 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-orange-400 text-slate-800 placeholder:text-slate-400 transition-all" />
-              </div>
-              <div class="space-y-1.5">
-                <label class="block text-xs font-semibold text-slate-600">Currency</label>
-                <select formControlName="salary_currency"
-                  class="w-full px-3 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-orange-400 text-slate-700 appearance-none">
-                  <option value="INR">INR ₹</option>
-                  <option value="USD">USD $</option>
-                  <option value="EUR">EUR €</option>
-                  <option value="GBP">GBP £</option>
-                </select>
-              </div>
-            </div>
-
-            <!-- Row 5: Priority -->
-            <div class="space-y-2">
-              <label class="block text-xs font-semibold text-slate-600">Priority</label>
-              <div class="flex gap-2">
-                @for (p of priorities; track p) {
-                  <label
-                    class="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl border cursor-pointer transition-all text-xs font-semibold"
-                    [class]="editForm.value.priority === p ?
-                      (p === 'low' ? 'bg-emerald-50 border-emerald-300 text-emerald-700' :
-                       p === 'medium' ? 'bg-amber-50 border-amber-300 text-amber-700' :
-                       'bg-rose-50 border-rose-300 text-rose-700') :
-                      'bg-slate-50 border-slate-200 text-slate-500 hover:border-slate-300'"
-                  >
-                    <input type="radio" formControlName="priority" [value]="p" class="hidden" />
-                    <span class="w-2 h-2 rounded-full"
-                      [class]="p === 'low' ? 'bg-emerald-400' : p === 'medium' ? 'bg-amber-400' : 'bg-rose-400'">
-                    </span>
-                    {{ p | titlecase }}
-                  </label>
-                }
-              </div>
-            </div>
-
-            <!-- Row 6: Dates -->
-            <div class="grid grid-cols-2 gap-4">
-              <div class="space-y-1.5">
-                <label class="block text-xs font-semibold text-slate-600">Applied Date</label>
-                <input formControlName="applied_date" type="date"
-                  class="w-full px-3 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-orange-400 text-slate-700 transition-all" />
-              </div>
-              <div class="space-y-1.5">
-                <label class="block text-xs font-semibold text-slate-600">Deadline</label>
-                <input formControlName="deadline" type="date"
-                  class="w-full px-3 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-orange-400 text-slate-700 transition-all" />
-              </div>
-            </div>
-
-            <!-- Job URL -->
-            <div class="space-y-1.5">
-              <label class="block text-xs font-semibold text-slate-600">Job URL</label>
-              <input formControlName="job_url" type="url" placeholder="https://..."
-                class="w-full px-3 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-orange-400 text-slate-800 placeholder:text-slate-400 transition-all" />
-            </div>
-
-            <!-- Notes -->
-            <div class="space-y-1.5">
-              <label class="block text-xs font-semibold text-slate-600">Notes</label>
-              <textarea formControlName="notes" rows="3" placeholder="Notes, next steps..."
-                class="w-full px-3 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-orange-400 text-slate-800 placeholder:text-slate-400 transition-all resize-none">
-              </textarea>
-            </div>
-
-            <!-- Form Actions -->
-            <div class="flex gap-3 pt-1">
-              <button
-                type="button"
-                (click)="toggleEditMode()"
-                class="flex-1 py-2.5 text-sm font-semibold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-xl transition-colors"
-                id="btn-cancel-edit"
-              >
-                Cancel
-              </button>
-              <button
-                type="submit"
-                [disabled]="editForm.invalid || isSaving()"
-                class="flex-1 py-2.5 text-sm font-bold text-white bg-orange-500 hover:bg-orange-600 disabled:opacity-50 disabled:cursor-not-allowed rounded-xl transition-all active:scale-[0.98] shadow-sm shadow-orange-200"
-                id="btn-save-edit"
-              >
-                {{ isSaving() ? 'Saving…' : 'Save Changes' }}
-              </button>
-            </div>
-
-          </form>
+          <!-- Reused JobForm in edit mode -->
+          <app-job-form
+            mode="edit"
+            [jobData]="j"
+            [isSaving]="isSaving()"
+            (jobUpdated)="onJobUpdated($event)"
+            (cancelled)="onEditCancelled()"
+          ></app-job-form>
         </div>
       }
 
     </div>
   }
-  @else {
+
+  <!-- ── Job not found ── -->
+  @else if (!isLoading()) {
     <div class="flex items-center justify-center h-64">
       <p class="text-slate-500">No Job Found</p>
     </div>

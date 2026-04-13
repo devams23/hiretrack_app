@@ -1,16 +1,18 @@
-<!-- Job Application Form — used inside the Kanban column modal -->
+<!-- Job Form — reusable for both Create and Edit modes -->
 <div class="px-6 py-5">
   <form [formGroup]="jobForm" (ngSubmit)="onSubmit()" class="space-y-5" id="job-application-form">
 
-    <!-- Status Display (read-only, showing column name) -->
-    <div class="flex items-center gap-2 px-3 py-2 bg-orange-50 border border-orange-100 rounded-xl">
-      <svg class="w-4 h-4 text-orange-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2" />
-      </svg>
-      <p class="text-xs text-orange-700 font-medium">
-        Status: <span class="font-bold">{{ columnName() }}</span>
-      </p>
-    </div>
+    <!-- Status / Context Banner -->
+    @if (mode() === 'create' && columnName()) {
+      <div class="flex items-center gap-2 px-3 py-2 bg-orange-50 border border-orange-100 rounded-xl">
+        <svg class="w-4 h-4 text-orange-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2" />
+        </svg>
+        <p class="text-xs text-orange-700 font-medium">
+          Adding to: <span class="font-bold">{{ columnName() }}</span>
+        </p>
+      </div>
+    }
 
     <!-- Row 1: Company + Role -->
     <div class="grid grid-cols-2 gap-4">
@@ -49,11 +51,9 @@
           formControlName="job_type"
           class="w-full px-3 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-orange-400 text-slate-700 transition-all appearance-none"
         >
-          <option value="full-time">Full-Time</option>
-          <option value="part-time">Part-Time</option>
-          <option value="contract">Contract</option>
-          <option value="internship">Internship</option>
-          <option value="freelance">Freelance</option>
+          @for (type of jobTypeLabels | keyvalue; track type) {
+            <option [value]="type.key">{{ type.value }}</option>
+          }
         </select>
       </div>
       <div class="space-y-1.5">
@@ -63,9 +63,9 @@
           formControlName="work_mode"
           class="w-full px-3 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-orange-400 text-slate-700 transition-all appearance-none"
         >
-          <option value="remote">Remote</option>
-          <option value="hybrid">Hybrid</option>
-          <option value="on-site">On-Site</option>
+          @for (mode of workModeLabels | keyvalue; track mode) {
+            <option [value]="mode.key">{{ mode.value }}</option>
+          }
         </select>
       </div>
     </div>
@@ -89,13 +89,9 @@
           formControlName="source"
           class="w-full px-3 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-orange-400 text-slate-700 transition-all appearance-none"
         >
-          <option value="linkedin">LinkedIn</option>
-          <option value="naukri">Naukri</option>
-          <option value="referral">Referral</option>
-          <option value="company-website">Company Website</option>
-          <option value="internshala">Internshala</option>
-          <option value="cold-apply">Cold Apply</option>
-          <option value="other">Other</option>
+          @for (src of sourceLabels | keyvalue; track src) {
+            <option [value]="src.key">{{ src.value }}</option>
+          }
         </select>
       </div>
     </div>
@@ -112,45 +108,31 @@
           class="w-full px-3 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-orange-400 text-slate-800 placeholder:text-slate-400 transition-all"
         />
       </div>
-      <div class="space-y-1.5">
-        <label for="job-currency" class="block text-xs font-semibold text-slate-600">Currency</label>
-        <select
-          id="job-currency"
-          formControlName="salary_currency"
-          class="w-full px-3 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-orange-400 text-slate-700 transition-all appearance-none"
-        >
-          <option value="INR">INR ₹</option>
-          <option value="USD">USD $</option>
-          <option value="EUR">EUR €</option>
-          <option value="GBP">GBP £</option>
-        </select>
-      </div>
+
     </div>
 
-    <!-- Row 5: Priority -->
-    <div class="space-y-2">
+    <!-- Row 5: Priority (radio group) -->
+    <!-- <div class="space-y-2">
       <label class="block text-xs font-semibold text-slate-600">Priority</label>
       <div class="flex gap-2">
-        <label class="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl border cursor-pointer transition-all text-xs font-semibold"
-          [class]="jobForm.value.priority === 'low' ? 'bg-emerald-50 border-emerald-300 text-emerald-700' : 'bg-slate-50 border-slate-200 text-slate-500 hover:border-slate-300'">
-          <input type="radio" formControlName="priority" value="low" class="hidden" />
-          <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
-          Low
-        </label>
-        <label class="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl border cursor-pointer transition-all text-xs font-semibold"
-          [class]="jobForm.value.priority === 'medium' ? 'bg-amber-50 border-amber-300 text-amber-700' : 'bg-slate-50 border-slate-200 text-slate-500 hover:border-slate-300'">
-          <input type="radio" formControlName="priority" value="medium" class="hidden" />
-          <span class="w-2 h-2 rounded-full bg-amber-400"></span>
-          Medium
-        </label>
-        <label class="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl border cursor-pointer transition-all text-xs font-semibold"
-          [class]="jobForm.value.priority === 'high' ? 'bg-rose-50 border-rose-300 text-rose-700' : 'bg-slate-50 border-slate-200 text-slate-500 hover:border-slate-300'">
-          <input type="radio" formControlName="priority" value="high" class="hidden" />
-          <span class="w-2 h-2 rounded-full bg-rose-400"></span>
-          High
-        </label>
+        @for (p of pr; track p) {
+          <label
+            class="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl border cursor-pointer transition-all text-xs font-semibold"
+            [class]="jobForm.value.priority === p
+              ? (p === 'low'    ? 'bg-emerald-50 border-emerald-300 text-emerald-700'
+               : p === 'medium' ? 'bg-amber-50 border-amber-300 text-amber-700'
+               :                  'bg-rose-50 border-rose-300 text-rose-700')
+              : 'bg-slate-50 border-slate-200 text-slate-500 hover:border-slate-300'"
+          >
+            <input type="radio" formControlName="priority" [value]="p" class="hidden" />
+            <span class="w-2 h-2 rounded-full"
+              [class]="p === 'low' ? 'bg-emerald-400' : p === 'medium' ? 'bg-amber-400' : 'bg-rose-400'">
+            </span>
+            {{ p | titlecase }}
+          </label>
+        }
       </div>
-    </div>
+    </div> -->
 
     <!-- Row 6: Applied Date + Deadline -->
     <div class="grid grid-cols-2 gap-4">
@@ -174,7 +156,19 @@
       </div>
     </div>
 
-    <!-- Row 7: Notes -->
+    <!-- Row 7: Job URL -->
+    <div class="space-y-1.5">
+      <label for="job-url" class="block text-xs font-semibold text-slate-600">Job URL</label>
+      <input
+        id="job-url"
+        formControlName="job_url"
+        type="url"
+        placeholder="https://careers.company.com/..."
+        class="w-full px-3 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-orange-400 text-slate-800 placeholder:text-slate-400 transition-all"
+      />
+    </div>
+
+    <!-- Row 8: Notes -->
     <div class="space-y-1.5">
       <label for="job-notes" class="block text-xs font-semibold text-slate-600">Notes</label>
       <textarea
@@ -186,19 +180,46 @@
       ></textarea>
     </div>
 
-    <!-- Submit -->
-    <div class="pt-1">
+    <!-- Actions -->
+    <div class="pt-1" [class.flex]="mode() === 'edit'" [class.gap-3]="mode() === 'edit'">
+
+      <!-- Cancel button — only in edit mode -->
+      @if (mode() === 'edit') {
+        <button
+          type="button"
+          (click)="onCancel()"
+          class="flex-1 py-3 text-sm font-semibold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-xl transition-colors"
+          id="btn-cancel-job-form"
+        >
+          Cancel
+        </button>
+      }
+
       <button
         type="submit"
-        [disabled]="jobForm.invalid"
-        class="w-full py-3 bg-orange-500 hover:bg-orange-600 disabled:opacity-50 disabled:cursor-not-allowed text-white text-sm font-bold rounded-xl transition-all duration-150 active:scale-[0.98] shadow-sm shadow-orange-200 flex items-center justify-center gap-2"
+        [disabled]="jobForm.invalid || isSaving()"
+        class="flex-1 py-3 bg-orange-500 hover:bg-orange-600 disabled:opacity-50 disabled:cursor-not-allowed text-white text-sm font-bold rounded-xl transition-all duration-150 active:scale-[0.98] shadow-sm shadow-orange-200 flex items-center justify-center gap-2"
         id="btn-submit-job"
       >
-        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
-        </svg>
-        Save Job Application
+        @if (isSaving()) {
+          <svg class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+          </svg>
+          Saving…
+        } @else if (mode() === 'edit') {
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+          </svg>
+          Save Changes
+        } @else {
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+          </svg>
+          Add Job Application
+        }
       </button>
+
     </div>
 
   </form>
