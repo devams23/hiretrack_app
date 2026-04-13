@@ -213,7 +213,7 @@
         </button>
       </div>
       <!-- Embed the existing board form component -->
-      <app-board-form (boardCreated)="closeBoardModelAndNavigate($event)"></app-board-form>
+      <app-board-form #appboardform (boardCreated)="closeBoardModelAndNavigate($event)"></app-board-form>
     </div>
   </div>
 }

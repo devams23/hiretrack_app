@@ -12,20 +12,9 @@ import {
 } from '@angular/forms';
 import { JobApplication, CreateJobDto, UpdateJobDto } from '../../../core/models/hire-track-app/jobs-model';
 import { JobType, WorkMode, ApplicationSource } from '../../../core/types/job-application';
+import { deadlineAfterAppliedDate } from '../../../core/validators/deadline-validator';
 
-// ── Custom cross-field validator ───────────────────────────────────────────
-/**
- * Group-level validator: deadline must be on or after applied_date.
- * Only fires when both fields have a value.
- */
-const deadlineAfterAppliedDate: ValidatorFn = (group: AbstractControl): ValidationErrors | null => {
-  const applied  = group.get('applied_date')?.value as string | null;
-  const deadline = group.get('deadline')?.value  as string | null;
-  if (!applied || !deadline) return null;
-  return new Date(deadline) >= new Date(applied)
-    ? null
-    : { deadlineBeforeApplied: true };
-};
+
 
 // ── URL pattern (basic, allows http/https/ftp) ────────────────────────────
 const URL_PATTERN = /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/i;
@@ -93,6 +82,12 @@ export class JobForm {
     }
   }
 
+  hasUnsavedChanges():boolean{
+    if(this.jobForm.dirty){
+      return true
+    }
+    return false;
+  }
   // ── Submit ──────────────────────────────────────────────────────
   onSubmit() {
     if (this.jobForm.invalid) {

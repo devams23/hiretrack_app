@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, ViewChild, viewChild } from '@angular/core';
 import { RouterOutlet, RouterLink, RouterLinkActive, Router } from '@angular/router';
 import { AuthService } from '../../core/services/auth-service';
 import { BoardService } from '../../core/services/board-service';
@@ -18,11 +18,13 @@ export class Layout {
   private boardService = inject(BoardService);
   private router = inject(Router);
   private searchService = inject(SearchService);
-
+  @ViewChild('appboardform') appBoardForm!:BoardForm;
+  // appBoardForm = viewChild<BoardForm>('appboardform');
   boards = signal<Board[]>([]);
   showBoardModal = signal<boolean>(false);
   isSidebarOpen = signal<boolean>(true);
-
+  isSaved = signal<boolean>(false);
+  
   ngOnInit() {
     this.boardService.getAllBoards().subscribe({
       next: (boards) => {
@@ -41,7 +43,17 @@ export class Layout {
   }
 
   closeBoardModal() {
-    this.showBoardModal.set(false);
+    console.log("hello");
+    if(this.appBoardForm.hasUnsavedChanges()){
+      if(confirm("Do you want to discard the changes")){
+        this.showBoardModal.set(false);
+      }
+    }
+    else{
+      this.showBoardModal.set(false);
+
+    }
+    //this.router.navigate(['boards'])
 
   }
   closeBoardModelAndNavigate(board:Board){

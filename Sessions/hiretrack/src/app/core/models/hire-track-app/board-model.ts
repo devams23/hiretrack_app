@@ -1,6 +1,6 @@
 // ─── BOARD ───────────────────────────────────
 
-import { Column } from "./board-columns-model";
+import { Column } from "./board-columns";
 import { JobApplication  } from "./jobs-model";
 
 export interface Board {

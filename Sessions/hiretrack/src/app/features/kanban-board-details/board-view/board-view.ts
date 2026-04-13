@@ -1,4 +1,4 @@
-import { Component, computed, inject, Signal, signal } from '@angular/core';
+import { Component, computed, inject, Signal, signal, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ColumnService } from '../../../core/services/column-service';
 import { JobService } from '../../../core/services/job-service';
@@ -12,6 +12,7 @@ import { SearchService } from '../../../shared/services/search';
 import { BoardService } from '../../../core/services/board-service';
 import { Board, KanbanColumn } from '../../../core/models/hire-track-app/board-model';
 import { JobApplication } from '../../../core/models/hire-track-app/jobs-model';
+import { BoardForm } from '../../boards/board-form/board-form';
 
 @Component({
   selector: 'app-board-view',
@@ -30,6 +31,8 @@ export class BoardView {
   private boardService = inject(BoardService);
   protected boardId = signal<string>('');
   protected columns = signal<KanbanColumn[]>([]);
+  @ViewChild('appjobform') appJobForm!:JobForm;
+
 
   /**
    * Derived signal — filters columns' job_applications by the debounced
@@ -103,11 +106,24 @@ export class BoardView {
   }
 
   closeJobModal() {
-    this.showJobModal.set(false);
+        if(this.appJobForm.hasUnsavedChanges()){
+      if(confirm("Do you want to discard the changes")){
+        this.localColumnCleanUp()
+      }
+    }
+    else{
+this.localColumnCleanUp();
+
+    }
+
+  }
+
+  localColumnCleanUp(){
+          this.showJobModal.set(false);
     this.selectedColumnId.set('');
     this.selectedColumnName.set('');
   }
-
+  
   closeJobModalAfterJobCreation(job: JobApplication) {
     // Optimistic update — no extra API call
     this.columns.update((columns) => {

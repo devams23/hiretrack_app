@@ -1,4 +1,4 @@
-import { Component, inject, output } from '@angular/core';
+import { Component, inject, output, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
   import { BoardService } from '../../../core/services/board-service';
 import { Board, CreateBoardDto } from '../../../core/models/hire-track-app/board-model';
@@ -18,12 +18,18 @@ export class BoardForm {
   ngOnInit() {
     this.initializeForm();
   }
-  
+  hasUnsavedChanges():boolean{
+    if(this.boardForm.dirty){
+      return true
+    }
+    return false;
+  }
   onSubmit() { 
     if (this.boardForm.invalid) {
       this.boardForm.markAllAsTouched();
       return;
     }
+
     const boardData: CreateBoardDto = {
         name: this.boardForm.value.name,
         description: this.boardForm.value.description

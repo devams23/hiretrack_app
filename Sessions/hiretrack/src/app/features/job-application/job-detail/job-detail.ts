@@ -1,14 +1,15 @@
-import { Component, inject, Signal, signal, WritableSignal } from '@angular/core';
+import { Component, inject, signal, WritableSignal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { JobService } from '../../../core/services/job-service';
 import { DatePipe, DecimalPipe, Location } from '@angular/common';
 import { JobForm } from '../job-form/job-form';
 import { RelativeDatePipe } from '../../../shared/pipes/relative-date/relative-date-pipe';
 import { JobApplication } from '../../../core/models/hire-track-app/jobs-model';
-import { ColColorDirective } from "../../../core/directives/col-color";
+import { ColColorDirective } from '../../../core/directives/col-color';
+
 @Component({
   selector: 'app-job-detail',
-  imports: [DatePipe, DecimalPipe, JobForm, RelativeDatePipe, ColColorDirective, ColColorDirective],
+  imports: [DatePipe, DecimalPipe, JobForm, RelativeDatePipe , ColColorDirective],
   templateUrl: './job-detail.html',
   styleUrl: './job-detail.css',
 })

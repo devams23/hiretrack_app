@@ -2,7 +2,6 @@ import { Directive, Input, HostBinding, OnChanges } from '@angular/core';
 
 @Directive({
   selector: '[appColColor]',
-  standalone: true
 })
 export class ColColorDirective implements OnChanges {
   // Pass the column name into the directive

@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './core/guards/auth-guard';
+import { pendingChangesGuard } from './core/guards/pending-changes-guard';
 
 export const routes: Routes = [
   {
@@ -26,6 +27,8 @@ export const routes: Routes = [
     path: '', 
     loadComponent: () => import('./shared/layout/layout').then((m) => m.Layout),
     canActivate: [authGuard],
+    canDeactivate:[pendingChangesGuard],
+
     children: [
       {
         path: 'boards',
