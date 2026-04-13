@@ -2,10 +2,10 @@ import { Component, inject, signal } from '@angular/core';
 import { RouterOutlet, RouterLink, RouterLinkActive, Router } from '@angular/router';
 import { AuthService } from '../../core/services/auth-service';
 import { BoardService } from '../../core/services/board-service';
-import { Board } from '../../core/models/job';
 import { BoardForm } from '../../features/boards/board-form/board-form';
 import { AsyncPipe } from '@angular/common';
 import { SearchService } from '../services/search';
+import { Board } from '../../core/models/hire-track-app/board';
 
 @Component({
   selector: 'app-layout',

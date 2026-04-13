@@ -1,5 +1,5 @@
 import { Component, inject, signal } from '@angular/core';
-import { Board } from '../../../core/models/job';
+import { Board } from '../../../core/models/hire-track-app/board';
 import { BoardService } from '../../../core/services/board-service';
 import { Router } from '@angular/router';
 import { RelativeDatePipe } from '../../../shared/pipes/relative-date/relative-date-pipe';

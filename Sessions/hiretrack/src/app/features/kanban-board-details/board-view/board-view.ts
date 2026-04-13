@@ -2,7 +2,7 @@ import { Component, computed, inject, Signal, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ColumnService } from '../../../core/services/column-service';
 import { JobService } from '../../../core/services/job-service';
-import { Board, JobApplication, KanbanColumn } from '../../../core/models/job';
+
 import { JobForm } from '../../job-application/job-form/job-form';
 import { TitleCasePipe, DecimalPipe } from '@angular/common';
 import { ConfirmDialog } from '../../../shared/confirm-dialog/confirm-dialog';
@@ -10,6 +10,8 @@ import { RelativeDatePipe } from '../../../shared/pipes/relative-date/relative-d
 import { JobCountPipe } from '../../../shared/pipes/job-count/job-count-pipe';
 import { SearchService } from '../../../shared/services/search';
 import { BoardService } from '../../../core/services/board-service';
+import { Board, KanbanColumn } from '../../../core/models/hire-track-app/board';
+import { JobApplication } from '../../../core/models/hire-track-app/jobs';
 
 @Component({
   selector: 'app-board-view',

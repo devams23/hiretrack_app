@@ -2,14 +2,9 @@ import { Component, inject, input, OnChanges, output, SimpleChanges } from '@ang
 import { KeyValuePipe } from '@angular/common';
 import { JobService } from '../../../core/services/job-service';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import {
-  ApplicationSource,
-  CreateJobDto,
-  JobApplication,
-  JobType,
-  UpdateJobDto,
-  WorkMode,
-} from '../../../core/models/job';
+import { JobApplication, CreateJobDto, UpdateJobDto } from '../../../core/models/hire-track-app/jobs';
+import { JobType, WorkMode, ApplicationSource } from '../../../core/types/job-application';
+
 
 @Component({
   selector: 'app-job-form',

@@ -1,10 +1,10 @@
 import { Component, inject, Signal, signal, WritableSignal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { JobService } from '../../../core/services/job-service';
-import { JobApplication } from '../../../core/models/job';
 import { DatePipe, TitleCasePipe, DecimalPipe, Location } from '@angular/common';
 import { JobForm } from '../job-form/job-form';
 import { RelativeDatePipe } from '../../../shared/pipes/relative-date/relative-date-pipe';
+import { JobApplication } from '../../../core/models/hire-track-app/jobs';
 @Component({
   selector: 'app-job-detail',
   imports: [DatePipe, TitleCasePipe, DecimalPipe, JobForm, RelativeDatePipe],

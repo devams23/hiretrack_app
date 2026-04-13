@@ -2,8 +2,8 @@ import { inject, Injectable, signal } from '@angular/core';
 import { AuthService } from './auth-service';
 import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
 import { devenvironment } from '../../../environments/environment.development';
-import { Board, CreateBoardDto } from '../models/job';
 import { Observable } from 'rxjs';
+import { Board, CreateBoardDto } from '../models/hire-track-app/board';
 
 
 

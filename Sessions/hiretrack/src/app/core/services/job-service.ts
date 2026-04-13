@@ -1,8 +1,8 @@
 import { inject, Injectable } from '@angular/core';
 import { devenvironment } from '../../../environments/environment.development';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { CreateJobDto, JobApplication, UpdateJobDto } from '../models/job';
 import { Observable } from 'rxjs';
+import { CreateJobDto, JobApplication, UpdateJobDto } from '../models/hire-track-app/jobs';
 
 @Injectable({
   providedIn: 'root',

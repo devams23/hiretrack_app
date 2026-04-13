@@ -1,8 +1,7 @@
 import { Component, inject, output } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Board, CreateBoardDto } from '../../../core/models/job';
-import { BoardService } from '../../../core/services/board-service';
-import { HttpResponse } from '@angular/common/http';
+  import { BoardService } from '../../../core/services/board-service';
+import { Board, CreateBoardDto } from '../../../core/models/hire-track-app/board';
 
 @Component({
   selector: 'app-board-form',
@@ -24,7 +23,6 @@ export class BoardForm {
     if (this.boardForm.valid) {
       const boardData: CreateBoardDto = {
         name: this.boardForm.value.name,
-        color: this.boardForm.value.color,
         description: this.boardForm.value.description
       }
       this.boardService.createBoard(boardData).subscribe({
