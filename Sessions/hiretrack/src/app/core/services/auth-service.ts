@@ -6,6 +6,7 @@ import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { UserModel } from '../models/user-model';
 import { Router } from '@angular/router';
 import { SupabaseSignInResponse, SupabaseSignUpResponse } from '../models/supabase-auth';
+import { createLinkedSignal } from '@angular/core/primitives/signals';
 
 @Injectable({
   providedIn: 'root',
@@ -87,10 +88,11 @@ this.autoLogin();
     const storedUser = localStorage.getItem('currentUser') ?? "";
     if(storedUser){
       const userData: UserModel = JSON.parse(storedUser);
-      const now = new Date();
-      const expiresAt = new Date(userData.expiresAt);
-      console.log(expiresAt)
-      return now < expiresAt;
+      const now = Math.floor(new Date().getTime()/1000);
+      console.log("NOW--" , now )
+      console.log("EXPIRES AT--" , userData.expiresAt);
+      
+      return now < userData.expiresAt;
     }
     return false;
   }

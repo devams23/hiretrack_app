@@ -17,7 +17,7 @@ import {
   templateUrl: './job-form.html',
   styleUrl: './job-form.css',
 })
-export class JobForm implements OnChanges {
+export class JobForm {
   // ── Inputs ──────────────────────────────────────────────────────
   /** 'create' (default) — calls createJob, emits jobCreated
    *  'edit'   — calls updateJob, emits jobUpdated             */
@@ -79,12 +79,12 @@ export class JobForm implements OnChanges {
    * When jobData input changes (e.g. parent loads job from API after init),
    * re-patch the form so we don't show stale values.
    */
-  ngOnChanges(changes: SimpleChanges) {
-    if (changes['jobData'] && this.jobForm && this.mode() === 'edit') {
-      const job = changes['jobData'].currentValue as JobApplication | null;
-      if (job) this.patchFromJobData(job);
-    }
-  }
+  // ngOnChanges(changes: SimpleChanges) {
+  //   if (changes['jobData'] && this.jobForm && this.mode() === 'edit') {
+  //     const job = changes['jobData'].currentValue as JobApplication | null;
+  //     if (job) this.patchFromJobData(job);
+  //   }
+  // }
 
   // ── Submit ──────────────────────────────────────────────────────
   onSubmit() {

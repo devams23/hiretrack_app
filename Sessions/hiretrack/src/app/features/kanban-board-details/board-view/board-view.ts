@@ -1,18 +1,19 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, Signal, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ColumnService } from '../../../core/services/column-service';
 import { JobService } from '../../../core/services/job-service';
-import { JobApplication, KanbanColumn } from '../../../core/models/job';
+import { Board, JobApplication, KanbanColumn } from '../../../core/models/job';
 import { JobForm } from '../../job-application/job-form/job-form';
 import { TitleCasePipe, DecimalPipe } from '@angular/common';
 import { ConfirmDialog } from '../../../shared/confirm-dialog/confirm-dialog';
 import { RelativeDatePipe } from '../../../shared/pipes/relative-date/relative-date-pipe';
 import { JobCountPipe } from '../../../shared/pipes/job-count/job-count-pipe';
 import { SearchService } from '../../../shared/services/search';
+import { BoardService } from '../../../core/services/board-service';
 
 @Component({
   selector: 'app-board-view',
-  imports: [JobForm, TitleCasePipe, DecimalPipe, ConfirmDialog, RelativeDatePipe, JobCountPipe],
+  imports: [JobForm, TitleCasePipe, DecimalPipe, ConfirmDialog, RelativeDatePipe, JobCountPipe ],
   templateUrl: './board-view.html',
   styleUrl: './board-view.css',
 })
@@ -23,7 +24,8 @@ export class BoardView {
   private columnService = inject(ColumnService);
   private jobService = inject(JobService);
   protected searchService = inject(SearchService);
-
+  protected currentBoard = signal<Board|null>(null);
+  private boardService = inject(BoardService);
   protected boardId = signal<string>('');
   protected columns = signal<KanbanColumn[]>([]);
 
@@ -48,7 +50,13 @@ export class BoardView {
     }));
   });
 
-  // Job creation modal
+  protected columnsTypeCount: Signal<{[columnId:string]:number}>= computed(() => {
+    const counts: { [columnId: string]: number } = {};
+    this.columns().forEach((col) => {
+      counts[col.id] = col.job_applications.length;
+    });
+    return counts;
+  }); 
   protected showJobModal = signal<boolean>(false);
   protected selectedColumnId = signal<string>('');
   protected selectedColumnName = signal<string>('');
@@ -64,6 +72,16 @@ export class BoardView {
   ngOnInit() {
     this.route.paramMap.subscribe((params) => {
       if (params.get('board_id')) {
+        this.boardService.getBoardDetailsById(params.get('board_id')).subscribe({
+         next: (board) => {
+          console.log('current board ' ,board);
+          
+            this.currentBoard.set(board[0]);
+          },
+          error: (error) => {
+            console.error('Error fetching board:', error);
+          }
+        });
         this.boardId.set(params.get('board_id')!);
         this.columnService.getAllJobsWithColumns(this.boardId()).subscribe({
           next: (columns) => {

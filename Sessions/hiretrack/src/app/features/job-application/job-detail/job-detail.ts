@@ -1,13 +1,13 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, Signal, signal, WritableSignal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { JobService } from '../../../core/services/job-service';
 import { JobApplication } from '../../../core/models/job';
 import { DatePipe, TitleCasePipe, DecimalPipe, Location } from '@angular/common';
 import { JobForm } from '../job-form/job-form';
-
+import { RelativeDatePipe } from '../../../shared/pipes/relative-date/relative-date-pipe';
 @Component({
   selector: 'app-job-detail',
-  imports: [DatePipe, TitleCasePipe, DecimalPipe, JobForm],
+  imports: [DatePipe, TitleCasePipe, DecimalPipe, JobForm, RelativeDatePipe],
   templateUrl: './job-detail.html',
   styleUrl: './job-detail.css',
 })
@@ -16,10 +16,9 @@ export class JobDetail {
   private location = inject(Location);
   private jobService = inject(JobService);
 
-  job       = signal<JobApplication | null>(null);
-  isEditMode = signal<boolean>(false);
-  isSaving   = signal<boolean>(false);
-  isLoading  = signal<boolean>(false);
+  job: WritableSignal<JobApplication | null> = signal<JobApplication | null>(null);
+  isEditMode: WritableSignal<boolean> = signal<boolean>(false);
+  isLoading: WritableSignal<boolean> = signal<boolean>(false);
 
   ngOnInit() {
     const jobId = this.route.snapshot.paramMap.get('job_id');
@@ -46,7 +45,7 @@ export class JobDetail {
   onJobUpdated(updated: JobApplication) {
     this.job.set(updated);
     this.isEditMode.set(false);
-    this.isSaving.set(false);
+
   }
 
   /** Called by job-form (cancelled) output */

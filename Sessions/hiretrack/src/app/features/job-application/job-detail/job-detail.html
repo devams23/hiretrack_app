@@ -10,7 +10,7 @@
   }
 
   <!-- ── Job found ── -->
-  @if (job(); as j) {
+  @if (job(); as jobData) {
     <div class="max-w-3xl mx-auto">
 
       <!-- Top Bar: Back + Read/Edit Toggle -->
@@ -75,22 +75,22 @@
           <div class="px-6 py-5 border-b border-slate-100">
             <div class="flex items-start justify-between gap-4">
               <div>
-                @if (j.source) {
+                @if (jobData.source) {
                   <span class="inline-block mb-2 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider rounded bg-orange-50 text-orange-500">
-                    {{ j.source }}
+                    {{ jobData.source }}
                   </span>
                 }
-                <h1 class="text-xl font-bold text-slate-800">{{ j.role }}</h1>
-                <p class="text-base text-slate-500 font-medium mt-0.5">{{ j.company_name }}</p>
+                <h1 class="text-xl font-bold text-slate-800">{{ jobData.role }}</h1>
+                <p class="text-base text-slate-500 font-medium mt-0.5">{{ jobData.company_name }}</p>
               </div>
               <div class="flex items-center gap-2 shrink-0">
-                @if (j.is_starred) {
+                @if (jobData.is_starred) {
                   <svg class="w-5 h-5 text-amber-400 fill-amber-400" viewBox="0 0 24 24">
                     <path d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/>
                   </svg>
                 }
-                <span class="px-2.5 py-1 rounded-full text-xs font-semibold" [class]="getPriorityClass(j.priority)">
-                  {{ j.priority | titlecase }}
+                <span class="px-2.5 py-1 rounded-full text-xs font-semibold" [class]="getPriorityClass(jobData.priority)">
+                  {{ jobData.priority | titlecase }}
                 </span>
               </div>
             </div>
@@ -100,58 +100,58 @@
           <div class="p-6 grid grid-cols-2 sm:grid-cols-3 gap-x-6 gap-y-5">
             <div class="space-y-0.5">
               <p class="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Job Type</p>
-              <p class="text-sm font-semibold text-slate-700">{{ j.job_type || '—' }}</p>
+              <p class="text-sm font-semibold text-slate-700">{{ jobData.job_type || '—' }}</p>
             </div>
             <div class="space-y-0.5">
               <p class="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Work Mode</p>
-              <p class="text-sm font-semibold text-slate-700">{{ j.work_mode || '—' }}</p>
+              <p class="text-sm font-semibold text-slate-700">{{ jobData.work_mode || '—' }}</p>
             </div>
             <div class="space-y-0.5">
               <p class="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Location</p>
-              <p class="text-sm font-semibold text-slate-700">{{ j.location || '—' }}</p>
+              <p class="text-sm font-semibold text-slate-700">{{ jobData.location || '—' }}</p>
             </div>
             <div class="space-y-0.5">
               <p class="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Expected Salary</p>
               <p class="text-sm font-semibold text-slate-700">
-                @if (j.expected_salary) {
-                  {{ j.salary_currency }} {{ j.expected_salary | number }}
+                @if (jobData.expected_salary) {
+                  {{ jobData.salary_currency }} {{ jobData.expected_salary | number }}
                 } @else { — }
               </p>
             </div>
             <div class="space-y-0.5">
-              <p class="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Applied Date</p>
-              <p class="text-sm font-semibold text-slate-700">{{ j.applied_date ? (j.applied_date | date:'MMM d, y') : '—' }}</p>
+              <p class="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Applied </p>
+              <p class="text-sm font-semibold text-slate-700">{{ jobData.applied_date ? (jobData.applied_date | relativeDate) : '—' }}</p>
             </div>
             <div class="space-y-0.5">
               <p class="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Deadline</p>
-              <p class="text-sm font-semibold text-slate-700">{{ j.deadline ? (j.deadline | date:'MMM d, y') : '—' }}</p>
+              <p class="text-sm font-semibold text-slate-700">{{ jobData.deadline ? (jobData.deadline | relativeDate) : '—' }}</p>
             </div>
-            @if (j.job_url) {
+            @if (jobData.job_url) {
               <div class="col-span-2 sm:col-span-3 space-y-0.5">
                 <p class="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Job URL</p>
-                <a [href]="j.job_url" target="_blank" rel="noopener"
+                <a [href]="jobData.job_url" target="_blank" rel="noopener"
                   class="text-sm font-semibold text-orange-500 hover:underline break-all">
-                  {{ j.job_url }}
+                  {{ jobData.job_url }}
                 </a>
               </div>
             }
           </div>
 
           <!-- Notes -->
-          @if (j.notes) {
+          @if (jobData.notes) {
             <div class="px-6 pb-6 border-t border-slate-50 pt-4">
               <p class="text-[10px] font-semibold text-slate-400 uppercase tracking-wider mb-2">Notes</p>
-              <p class="text-sm text-slate-600 leading-relaxed whitespace-pre-wrap">{{ j.notes }}</p>
+              <p class="text-sm text-slate-600 leading-relaxed whitespace-pre-wrap">{{ jobData.notes }}</p>
             </div>
           }
 
           <!-- Timestamps -->
           <div class="px-6 py-3 bg-slate-50 border-t border-slate-100 flex gap-6">
             <span class="text-[10px] text-slate-400">
-              Created <strong class="text-slate-500">{{ j.created_at | date: 'MMM d, y' }}</strong>
+              Created <strong class="text-slate-500">{{ jobData.created_at | date: 'MMM d, y' }}</strong>
             </span>
             <span class="text-[10px] text-slate-400">
-              Updated <strong class="text-slate-500">{{ j.updated_at | date: 'MMM d, y' }}</strong>
+              Updated <strong class="text-slate-500">{{ jobData.updated_at | date: 'MMM d, y' }}</strong>
             </span>
           </div>
         </div>
@@ -168,8 +168,7 @@
           <!-- Reused JobForm in edit mode -->
           <app-job-form
             mode="edit"
-            [jobData]="j"
-            [isSaving]="isSaving()"
+            [jobData]="jobData"
             (jobUpdated)="onJobUpdated($event)"
             (cancelled)="onEditCancelled()"
           ></app-job-form>

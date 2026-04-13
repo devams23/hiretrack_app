@@ -11,7 +11,7 @@ export const authHeadersInterceptor: HttpInterceptorFn = (req, next) => {
     authService.signOut();
     console.log('TOKEN IS EXPIRED...');
     
-    return next(req);
+    //return next(req);
   }
 
   const token = devenvironment.supabaseAnonKey;

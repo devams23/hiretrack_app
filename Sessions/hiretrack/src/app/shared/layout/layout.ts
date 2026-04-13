@@ -28,7 +28,9 @@ export class Layout {
       next: (boards) => {
         this.boards.set(boards);
       },
-      error: (err) => console.error(err),
+      error: (error) => {
+        console.error('Error fetching boards:', error);
+      }
     });
   }
   searchJobs(searchQuery: string) {
@@ -43,6 +45,8 @@ export class Layout {
 
   }
   closeBoardModelAndNavigate(board:Board){
+    console.log("CLOSING BOARD MODEL AND NAVIGATING...");
+
     this.showBoardModal.set(false);
     this.boards.update((boards) => [...boards, board]);
     this.router.navigate(['/boards', board.id]);

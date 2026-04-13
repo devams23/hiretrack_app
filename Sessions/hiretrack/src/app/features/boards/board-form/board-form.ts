@@ -29,11 +29,12 @@ export class BoardForm {
       }
       this.boardService.createBoard(boardData).subscribe({
         next: (response: Board[]) => {
+          console.log('Board created successfully:', response);
           if(response){
             const boardCreated = response[0];
             this.boardCreated.emit(boardCreated);
           }
-          this.boardForm.reset({ color: '#f97316' });
+          this.boardForm.reset();
         },
         error: (error) => {
           console.error('Error creating board:', error);
@@ -47,7 +48,6 @@ export class BoardForm {
     this.boardForm = new FormGroup({
       name : new FormControl('', [Validators.required]),
       description : new FormControl(''),
-      color: new FormControl('#f97316')
     });
   }
 }
