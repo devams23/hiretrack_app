@@ -4,18 +4,18 @@ import { ColumnService } from '../../../core/services/column-service';
 import { JobService } from '../../../core/services/job-service';
 
 import { JobForm } from '../../job-application/job-form/job-form';
-import { TitleCasePipe, DecimalPipe } from '@angular/common';
+import { DecimalPipe } from '@angular/common';
 import { ConfirmDialog } from '../../../shared/confirm-dialog/confirm-dialog';
 import { RelativeDatePipe } from '../../../shared/pipes/relative-date/relative-date-pipe';
 import { JobCountPipe } from '../../../shared/pipes/job-count/job-count-pipe';
 import { SearchService } from '../../../shared/services/search';
 import { BoardService } from '../../../core/services/board-service';
-import { Board, KanbanColumn } from '../../../core/models/hire-track-app/board';
-import { JobApplication } from '../../../core/models/hire-track-app/jobs';
+import { Board, KanbanColumn } from '../../../core/models/hire-track-app/board-model';
+import { JobApplication } from '../../../core/models/hire-track-app/jobs-model';
 
 @Component({
   selector: 'app-board-view',
-  imports: [JobForm, TitleCasePipe, DecimalPipe, ConfirmDialog, RelativeDatePipe, JobCountPipe ],
+  imports: [JobForm, DecimalPipe, ConfirmDialog, RelativeDatePipe, JobCountPipe ],
   templateUrl: './board-view.html',
   styleUrl: './board-view.css',
 })
@@ -119,8 +119,10 @@ export class BoardView {
   }
 
   // ─── Navigate to job detail ──────────────────────────────────────
-  openJobDetail(job: JobApplication) {
-    this.router.navigate(['/boards', this.boardId(), 'jobs', job.id]);
+  openJobDetail(job: JobApplication , columnName:string) {
+    console.log("JOB DETAIL CALLED");
+    
+    this.router.navigate(['/boards', this.boardId(), 'jobs', job.id] , {queryParams:{column_name:columnName}});
   }
 
   // ─── Drag & Drop (native HTML5) ─────────────────────────────────
@@ -200,7 +202,10 @@ export class BoardView {
   }
 
   // ─── Delete job ─────────────────────────────────────────────────
-  promptDeleteJob(job: JobApplication) {
+  promptDeleteJob(event: Event, job: JobApplication) {
+    event.stopPropagation();
+    console.log('DELETING JOB');
+    
     this.jobToDelete.set(job);
   }
 

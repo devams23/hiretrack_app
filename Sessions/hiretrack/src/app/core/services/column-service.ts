@@ -2,7 +2,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { devenvironment } from '../../../environments/environment.development';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Column, KanbanColumn } from '../models/job';
+import { KanbanColumn } from '../models/hire-track-app/board-model';
 
 @Injectable({
   providedIn: 'root',

@@ -17,28 +17,34 @@
     <!-- Row 1: Company + Role -->
     <div class="grid grid-cols-2 gap-4">
       <div class="space-y-1.5">
-        <label for="job-company" class="block text-xs font-semibold text-slate-600">
-          Company Name <span class="text-orange-500">*</span>
+        <label for="job-company" class="block text-xs font-semibold" [class.text-rose-600]="isInvalid('company_name')" [class.text-slate-600]="!isInvalid('company_name')">
+          Company Name <span class="text-orange-500" [class.text-rose-500]="isInvalid('company_name')">*</span>
         </label>
         <input
           id="job-company"
           formControlName="company_name"
           type="text"
           placeholder="Google, Amazon..."
-          class="w-full px-3 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-orange-400 text-slate-800 placeholder:text-slate-400 transition-all"
+          class="w-full px-3 py-2.5 text-sm bg-slate-50 border rounded-xl focus:outline-none focus:ring-2 text-slate-800 placeholder:text-slate-400 transition-all"
+          [class.border-slate-200]="!isInvalid('company_name')"
+          [class.border-rose-300]="isInvalid('company_name')"
         />
+        @if (getError('company_name'); as msg) { <p class="text-[11px] font-medium text-rose-500">{{ msg }}</p> }
       </div>
       <div class="space-y-1.5">
-        <label for="job-role" class="block text-xs font-semibold text-slate-600">
-          Role / Position <span class="text-orange-500">*</span>
+        <label for="job-role" class="block text-xs font-semibold" [class.text-rose-600]="isInvalid('role')" [class.text-slate-600]="!isInvalid('role')">
+          Role / Position <span class="text-orange-500" [class.text-rose-500]="isInvalid('role')">*</span>
         </label>
         <input
           id="job-role"
           formControlName="role"
           type="text"
           placeholder="Senior Angular Developer"
-          class="w-full px-3 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-orange-400 text-slate-800 placeholder:text-slate-400 transition-all"
+          class="w-full px-3 py-2.5 text-sm bg-slate-50 border rounded-xl focus:outline-none focus:ring-2 text-slate-800 placeholder:text-slate-400 transition-all"
+          [class.border-slate-200]="!isInvalid('role')"
+          [class.border-rose-300]="isInvalid('role')"
         />
+        @if (getError('role'); as msg) { <p class="text-[11px] font-medium text-rose-500">{{ msg }}</p> }
       </div>
     </div>
 
@@ -73,14 +79,17 @@
     <!-- Row 3: Location + Source -->
     <div class="grid grid-cols-2 gap-4">
       <div class="space-y-1.5">
-        <label for="job-location" class="block text-xs font-semibold text-slate-600">Location</label>
+        <label for="job-location" class="block text-xs font-semibold" [class.text-rose-600]="isInvalid('location')" [class.text-slate-600]="!isInvalid('location')">Location</label>
         <input
           id="job-location"
           formControlName="location"
           type="text"
           placeholder="Bangalore, Remote..."
-          class="w-full px-3 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-orange-400 text-slate-800 placeholder:text-slate-400 transition-all"
+          class="w-full px-3 py-2.5 text-sm bg-slate-50 border rounded-xl focus:outline-none focus:ring-2 text-slate-800 placeholder:text-slate-400 transition-all"
+          [class.border-slate-200]="!isInvalid('location')"
+          [class.border-rose-300]="isInvalid('location')"
         />
+        @if (getError('location'); as msg) { <p class="text-[11px] font-medium text-rose-500">{{ msg }}</p> }
       </div>
       <div class="space-y-1.5">
         <label for="job-source" class="block text-xs font-semibold text-slate-600">Application Source</label>
@@ -96,88 +105,80 @@
       </div>
     </div>
 
-    <!-- Row 4: Salary + Currency -->
+    <!-- Row 4: Salary -->
     <div class="grid grid-cols-2 gap-4">
       <div class="space-y-1.5">
-        <label for="job-salary" class="block text-xs font-semibold text-slate-600">Expected Salary</label>
+        <label for="job-salary" class="block text-xs font-semibold" [class.text-rose-600]="isInvalid('expected_salary')" [class.text-slate-600]="!isInvalid('expected_salary')">Expected Salary</label>
         <input
           id="job-salary"
           formControlName="expected_salary"
           type="number"
           placeholder="e.g. 1200000"
-          class="w-full px-3 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-orange-400 text-slate-800 placeholder:text-slate-400 transition-all"
+          class="w-full px-3 py-2.5 text-sm bg-slate-50 border rounded-xl focus:outline-none focus:ring-2 text-slate-800 placeholder:text-slate-400 transition-all"
+          [class.border-slate-200]="!isInvalid('expected_salary')"
+          [class.border-rose-300]="isInvalid('expected_salary')"
         />
-      </div>
-
-    </div>
-
-    <!-- Row 5: Priority (radio group) -->
-    <!-- <div class="space-y-2">
-      <label class="block text-xs font-semibold text-slate-600">Priority</label>
-      <div class="flex gap-2">
-        @for (p of pr; track p) {
-          <label
-            class="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl border cursor-pointer transition-all text-xs font-semibold"
-            [class]="jobForm.value.priority === p
-              ? (p === 'low'    ? 'bg-emerald-50 border-emerald-300 text-emerald-700'
-               : p === 'medium' ? 'bg-amber-50 border-amber-300 text-amber-700'
-               :                  'bg-rose-50 border-rose-300 text-rose-700')
-              : 'bg-slate-50 border-slate-200 text-slate-500 hover:border-slate-300'"
-          >
-            <input type="radio" formControlName="priority" [value]="p" class="hidden" />
-            <span class="w-2 h-2 rounded-full"
-              [class]="p === 'low' ? 'bg-emerald-400' : p === 'medium' ? 'bg-amber-400' : 'bg-rose-400'">
-            </span>
-            {{ p | titlecase }}
-          </label>
-        }
-      </div>
-    </div> -->
-
-    <!-- Row 6: Applied Date + Deadline -->
-    <div class="grid grid-cols-2 gap-4">
-      <div class="space-y-1.5">
-        <label for="job-applied-date" class="block text-xs font-semibold text-slate-600">Applied Date</label>
-        <input
-          id="job-applied-date"
-          formControlName="applied_date"
-          type="date"
-          class="w-full px-3 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-orange-400 text-slate-700 transition-all"
-        />
-      </div>
-      <div class="space-y-1.5">
-        <label for="job-deadline" class="block text-xs font-semibold text-slate-600">Deadline</label>
-        <input
-          id="job-deadline"
-          formControlName="deadline"
-          type="date"
-          class="w-full px-3 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-orange-400 text-slate-700 transition-all"
-        />
+        @if (getError('expected_salary'); as msg) { <p class="text-[11px] font-medium text-rose-500">{{ msg }}</p> }
       </div>
     </div>
 
-    <!-- Row 7: Job URL -->
+    <!-- Row 5: Applied Date + Deadline -->
+    <div>
+      <div class="grid grid-cols-2 gap-4">
+        <div class="space-y-1.5">
+          <label for="job-applied-date" class="block text-xs font-semibold text-slate-600">Applied Date</label>
+          <input
+            id="job-applied-date"
+            formControlName="applied_date"
+            type="date"
+            class="w-full px-3 py-2.5 text-sm bg-slate-50 border rounded-xl focus:outline-none focus:ring-2 transition-all"
+            [class.border-slate-200]="!getDateRangeError()"
+            [class.text-slate-700]="!getDateRangeError()"
+          />
+        </div>
+        <div class="space-y-1.5">
+          <label for="job-deadline" class="block text-xs font-semibold text-slate-600">Deadline</label>
+          <input
+            id="job-deadline"
+            formControlName="deadline"
+            type="date"
+            class="w-full px-3 py-2.5 text-sm bg-slate-50 border rounded-xl focus:outline-none focus:ring-2 transition-all"
+            [class.border-slate-200]="!getDateRangeError()"
+            [class.border-rose-300]="getDateRangeError()"
+          />
+        </div>
+      </div>
+      @if (getDateRangeError(); as msg) { <p class="text-[11px] font-medium text-rose-500 mt-1.5">{{ msg }}</p> }
+    </div>
+
+    <!-- Row 6: Job URL -->
     <div class="space-y-1.5">
-      <label for="job-url" class="block text-xs font-semibold text-slate-600">Job URL</label>
+      <label for="job-url" class="block text-xs font-semibold" [class.text-rose-600]="isInvalid('job_url')" [class.text-slate-600]="!isInvalid('job_url')">Job URL</label>
       <input
         id="job-url"
         formControlName="job_url"
         type="url"
         placeholder="https://careers.company.com/..."
-        class="w-full px-3 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-orange-400 text-slate-800 placeholder:text-slate-400 transition-all"
+        class="w-full px-3 py-2.5 text-sm bg-slate-50 border rounded-xl focus:outline-none focus:ring-2 text-slate-800 placeholder:text-slate-400 transition-all"
+        [class.border-slate-200]="!isInvalid('job_url')"
+        [class.border-rose-300]="isInvalid('job_url')"
       />
+      @if (getError('job_url'); as msg) { <p class="text-[11px] font-medium text-rose-500">{{ msg }}</p> }
     </div>
 
-    <!-- Row 8: Notes -->
+    <!-- Row 7: Notes -->
     <div class="space-y-1.5">
-      <label for="job-notes" class="block text-xs font-semibold text-slate-600">Notes</label>
+      <label for="job-notes" class="block text-xs font-semibold" [class.text-rose-600]="isInvalid('notes')" [class.text-slate-600]="!isInvalid('notes')">Notes</label>
       <textarea
         id="job-notes"
         formControlName="notes"
         rows="3"
         placeholder="Recruiter contact, next steps, referral details..."
-        class="w-full px-3 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-orange-400 text-slate-800 placeholder:text-slate-400 transition-all resize-none"
+        class="w-full px-3 py-2.5 text-sm bg-slate-50 border rounded-xl focus:outline-none focus:ring-2 text-slate-800 placeholder:text-slate-400 transition-all resize-none"
+        [class.border-slate-200]="!isInvalid('notes')"
+        [class.border-rose-300]="isInvalid('notes')"
       ></textarea>
+      @if (getError('notes'); as msg) { <p class="text-[11px] font-medium text-rose-500">{{ msg }}</p> }
     </div>
 
     <!-- Actions -->
@@ -197,8 +198,8 @@
 
       <button
         type="submit"
-        [disabled]="jobForm.invalid || isSaving()"
-        class="flex-1 py-3 bg-orange-500 hover:bg-orange-600 disabled:opacity-50 disabled:cursor-not-allowed text-white text-sm font-bold rounded-xl transition-all duration-150 active:scale-[0.98] shadow-sm shadow-orange-200 flex items-center justify-center gap-2"
+        [disabled]="isSaving()"
+        class="flex-1 w-full py-3 bg-orange-500 hover:bg-orange-600 disabled:opacity-50 disabled:cursor-not-allowed text-white text-sm font-bold rounded-xl transition-all duration-150 active:scale-[0.98] shadow-sm shadow-orange-200 flex items-center justify-center gap-2"
         id="btn-submit-job"
       >
         @if (isSaving()) {

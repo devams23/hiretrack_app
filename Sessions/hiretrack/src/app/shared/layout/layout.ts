@@ -5,7 +5,7 @@ import { BoardService } from '../../core/services/board-service';
 import { BoardForm } from '../../features/boards/board-form/board-form';
 import { AsyncPipe } from '@angular/common';
 import { SearchService } from '../services/search';
-import { Board } from '../../core/models/hire-track-app/board';
+import { Board } from '../../core/models/hire-track-app/board-model';
 
 @Component({
   selector: 'app-layout',

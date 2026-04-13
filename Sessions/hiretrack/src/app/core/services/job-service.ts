@@ -2,7 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { devenvironment } from '../../../environments/environment.development';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { CreateJobDto, JobApplication, UpdateJobDto } from '../models/hire-track-app/jobs';
+import { CreateJobDto, JobApplication, UpdateJobDto } from '../models/hire-track-app/jobs-model';
 
 @Injectable({
   providedIn: 'root',
@@ -23,9 +23,9 @@ export class JobService {
   }
 
   /** Update any fields on a job (used by the detail edit form) */
-  updateJob(jobId: string, dto: UpdateJobDto): Observable<JobApplication[]> {
+  updateJob(jobId: string, jobDto: UpdateJobDto): Observable<JobApplication[]> {
     const params = new HttpParams().set('id', `eq.${jobId}`);
-    return this.http.patch<JobApplication[]>(`${this.jobsApiUrl}`, dto, { params });
+    return this.http.patch<JobApplication[]>(`${this.jobsApiUrl}`, jobDto, { params });
   }
 
   /** Fetch a single job for the detail page */

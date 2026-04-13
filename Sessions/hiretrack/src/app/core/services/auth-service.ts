@@ -3,9 +3,9 @@ import { devenvironment } from '../../../environments/environment.development';
 import { HttpClient } from '@angular/common/http';
 import { AuthRequestData } from '../../features/auth/models/auth-model';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
-import { UserModel } from '../models/user-model';
+import { UserModel } from '../models/hire-track-app/user-model';
 import { Router } from '@angular/router';
-import { SupabaseSignInResponse, SupabaseSignUpResponse } from '../models/supabase-auth';
+import { SupabaseSignInResponse, SupabaseSignUpResponse } from '../models/supabase-auth-model';
 import { createLinkedSignal } from '@angular/core/primitives/signals';
 
 @Injectable({

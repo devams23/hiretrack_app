@@ -1,7 +1,7 @@
 // ─── BOARD ───────────────────────────────────
 
-import { Column } from "./board-columns";
-import { JobApplication  } from "./jobs";
+import { Column } from "./board-columns-model";
+import { JobApplication  } from "./jobs-model";
 
 export interface Board {
   id: string;

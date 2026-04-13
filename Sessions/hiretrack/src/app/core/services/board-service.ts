@@ -3,7 +3,7 @@ import { AuthService } from './auth-service';
 import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
 import { devenvironment } from '../../../environments/environment.development';
 import { Observable } from 'rxjs';
-import { Board, CreateBoardDto } from '../models/hire-track-app/board';
+import { Board, CreateBoardDto } from '../models/hire-track-app/board-model';
 
 
 

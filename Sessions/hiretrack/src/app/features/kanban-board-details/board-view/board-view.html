@@ -117,12 +117,12 @@
                 draggable="true"
                 (dragstart)="onDragStart($event, job, column.id)"
                 (dragend)="onDragEnd($event)"
-                (click)="openJobDetail(job)"
+                (click)="openJobDetail(job , column.name)"
               >
 
                 <!-- ── Delete button (top-right, only on hover) ── -->
                 <button
-                  (click)="promptDeleteJob( job)"
+                  (click)="promptDeleteJob($event , job)"
                   class="absolute top-2 right-2 w-6 h-6 rounded-lg flex items-center justify-center text-slate-300 hover:bg-rose-50 hover:text-rose-500 transition-all duration-150
                          opacity-0 group-hover:opacity-100 scale-75 group-hover:scale-100"
                   [id]="'btn-delete-job-' + job.id"
@@ -173,13 +173,6 @@
 
                 <!-- Footer: Priority + Salary + Star -->
                 <div class="flex items-center justify-between pt-2.5 border-t border-slate-50">
-                  <span
-                    class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold"
-                    [class]="getPriorityClass(job.priority)"
-                  >
-                    <span class="w-1.5 h-1.5 rounded-full" [class]="getPriorityDot(job.priority)"></span>
-                    {{ job.priority | titlecase }}
-                  </span>
                   <div class="flex items-center gap-2">
                     @if (job.expected_salary) {
                       <span class="text-[10px] text-slate-400 font-medium">

@@ -14,7 +14,6 @@ export interface JobApplication {
   job_url: string | null;
   expected_salary: number | null;
   salary_currency: string;
-  priority: Priority;
   applied_date: string | null;  
   deadline: string | null;
   notes: string | null;

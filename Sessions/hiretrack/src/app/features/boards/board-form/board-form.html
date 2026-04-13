@@ -4,21 +4,24 @@
 
     <!-- Board Name -->
     <div class="space-y-1.5">
-      <label for="board-name" class="block text-sm font-semibold text-slate-700">
-        Board Name <span class="text-orange-500">*</span>
+      <label for="board-name" class="block text-sm font-semibold" [class.text-rose-600]="isInvalid('name')" [class.text-slate-700]="!isInvalid('name')">
+        Board Name <span class="text-orange-500" [class.text-rose-500]="isInvalid('name')">*</span>
       </label>
       <input
         id="board-name"
         formControlName="name"
         type="text"
         placeholder="e.g. Frontend Roles 2025"
-        class="w-full px-3.5 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-orange-400 text-slate-800 placeholder:text-slate-400 transition-all"
+        class="w-full px-3.5 py-2.5 text-sm bg-slate-50 border rounded-xl focus:outline-none focus:ring-2 text-slate-800 placeholder:text-slate-400 transition-all"
+        [class.border-slate-200]="!isInvalid('name')"
+        [class.border-rose-300]="isInvalid('name')"
       />
+      @if (getError('name'); as msg) { <p class="text-[11px] font-medium text-rose-500">{{ msg }}</p> }
     </div>
 
     <!-- Description -->
     <div class="space-y-1.5">
-      <label for="board-description" class="block text-sm font-semibold text-slate-700">
+      <label for="board-description" class="block text-sm font-semibold" [class.text-rose-600]="isInvalid('description')"  [class.text-slate-700]="!isInvalid('description')">
         Description <span class="text-slate-400 font-normal">(optional)</span>
       </label>
       <textarea
@@ -26,31 +29,18 @@
         formControlName="description"
         placeholder="A brief note about this board..."
         rows="3"
-        class="w-full px-3.5 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-orange-400 text-slate-800 placeholder:text-slate-400 transition-all resize-none"
+        class="w-full px-3.5 py-2.5 text-sm bg-slate-50 border rounded-xl focus:outline-none focus:ring-2 text-slate-800 placeholder:text-slate-400 transition-all resize-none"
+        [class.border-slate-200]="!isInvalid('description')"
+        [class.border-rose-300]="isInvalid('description')"
       ></textarea>
+      @if (getError('description'); as msg) { <p class="text-[11px] font-medium text-rose-500">{{ msg }}</p> }
     </div>
-
-    <!-- Color Picker -->
-    <!-- <div class="space-y-1.5">
-      <label for="board-color" class="block text-sm font-semibold text-slate-700">
-        Board Color
-      </label>
-      <div class="flex items-center gap-3">
-        <input
-          id="board-color"
-          formControlName="color"
-          type="color"
-          class="w-10 h-10 rounded-xl border border-slate-200 cursor-pointer bg-transparent p-0.5"
-        />
-        <span class="text-sm text-slate-500">Pick a color to identify this board</span>
-      </div>
-    </div> -->
 
     <!-- Submit -->
     <div class="pt-2 flex gap-3">
       <button
+      [disabled]="boardForm.invalid"
         type="submit"
-        [disabled]="boardForm.invalid"
         class="flex-1 py-2.5 bg-orange-500 hover:bg-orange-600 disabled:opacity-50 disabled:cursor-not-allowed text-white text-sm font-semibold rounded-xl transition-all duration-150 active:scale-[0.98] shadow-sm shadow-orange-200"
         id="btn-submit-board"
       >
