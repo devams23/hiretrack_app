@@ -2,9 +2,11 @@
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import dotenv from 'dotenv';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const dotenv = require('dotenv').config({path: 'src/.env'}); 
+
+dotenv.config({path: 'src/.env'}); 
 
 
 const successColor = '\x1b[32m%s\x1b[0m';
