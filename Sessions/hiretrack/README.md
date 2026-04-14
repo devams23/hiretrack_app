@@ -20,7 +20,7 @@ HireTrack’s goal is simple: **To replace messy spreadsheets and disorganized f
 **The Solution:** HireTrack centralizes everything in beautifully structured Kanban boards. You can:
 - Visually drag and drop applications across different stages (e.g., Applied ➡️ Interview ➡️ Offer).
 - Keep track of important deadlines, roles, expected salary, and application links in one place.
-- Organize specific job search campaigns into their own standalone boards (e.g., "Frontend Roles 2025" vs "Fullstack Options").
+- Organize specific job search campaigns into their own standalone boards (e.g., "Frontend Roles 2026" vs "Fullstack Options").
 - Effortlessly get a high-level view of your current statuses, increasing your confidence and control over your career transition.
 
 ---
