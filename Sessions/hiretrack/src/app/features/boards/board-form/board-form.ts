@@ -2,6 +2,7 @@ import { Component, inject, output, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
   import { BoardService } from '../../../core/services/board-service';
 import { Board, CreateBoardDto } from '../../../core/models/hire-track-app/board-model';
+import { ToastService } from '../../../core/services/toast-service';
 
 @Component({
   selector: 'app-board-form',
@@ -14,7 +15,7 @@ export class BoardForm {
   protected boardForm!: FormGroup;
   private boardService = inject(BoardService);
   boardCreated = output<Board>();
-
+  protected toastService = inject(ToastService);
   ngOnInit() {
     this.initializeForm();
   }
@@ -36,15 +37,15 @@ export class BoardForm {
       }
       this.boardService.createBoard(boardData).subscribe({
         next: (response: Board[]) => {
-          console.log('Board created successfully:', response);
           if(response){
+            this.toastService.showSuccess('Board created successfully');
             const boardCreated = response[0];
             this.boardCreated.emit(boardCreated);
           }
           this.boardForm.reset();
         },
         error: (error) => {
-          console.error('Error creating board:', error);
+          this.toastService.showError('Error creating board');
         }
       });
   }

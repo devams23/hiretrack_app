@@ -1,5 +1,5 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { devenvironment } from '../../../environments/environment.development';
+import { environment } from '../../../environments/environment.development';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { KanbanColumn } from '../models/hire-track-app/board-model';
@@ -8,7 +8,7 @@ import { KanbanColumn } from '../models/hire-track-app/board-model';
   providedIn: 'root',
 })
 export class ColumnService {
-  private  columnsApiUrl = devenvironment.supabaseUrl + '/rest/v1/columns';
+  private  columnsApiUrl = environment.supabaseUrl + '/rest/v1/columns';
   private http = inject(HttpClient);
 
   getAllJobsWithColumns(boardId: string) : Observable<KanbanColumn[]> {

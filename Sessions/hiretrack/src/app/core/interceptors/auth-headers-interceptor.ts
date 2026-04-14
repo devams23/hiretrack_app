@@ -1,5 +1,5 @@
 import { HttpInterceptorFn } from '@angular/common/http';
-import { devenvironment } from '../../../environments/environment.development';
+import { environment } from '../../../environments/environment.development';
 import { inject } from '@angular/core';
 import { AuthService } from '../services/auth-service';
 
@@ -12,7 +12,7 @@ export const authHeadersInterceptor: HttpInterceptorFn = (req, next) => {
     //return next(req);
   }
 
-  const token = devenvironment.supabaseAnonKey;
+  const token = environment.supabaseAnonKey;
   const authToken = localStorage.getItem('currentUser')
     ? JSON.parse(localStorage.getItem('currentUser')!).accessToken
     : token;

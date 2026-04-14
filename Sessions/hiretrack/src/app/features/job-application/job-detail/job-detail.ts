@@ -1,4 +1,4 @@
-import { Component, inject, signal, WritableSignal } from '@angular/core';
+import { Component, inject, signal, WritableSignal, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { JobService } from '../../../core/services/job-service';
 import { DatePipe, DecimalPipe, Location } from '@angular/common';
@@ -22,6 +22,8 @@ export class JobDetail {
   isEditMode: WritableSignal<boolean> = signal<boolean>(false);
   isLoading: WritableSignal<boolean> = signal<boolean>(false);
   columnName: WritableSignal<string | null> = signal<string | null>(null);
+  
+  @ViewChild(JobForm) jobFormRef?: JobForm;
   
   ngOnInit() {
     const jobId = this.route.snapshot.paramMap.get('job_id');
@@ -62,4 +64,9 @@ export class JobDetail {
     this.location.back();
   }
 
+  /** Expose to CanDeactivate guard */
+  hasUnsavedChanges(): boolean {
+    if (!this.jobFormRef) return false;
+    return this.jobFormRef.hasUnsavedChanges();
+  }
 }

@@ -1,7 +1,7 @@
 import { inject, Injectable, signal } from '@angular/core';
 import { AuthService } from './auth-service';
 import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
-import { devenvironment } from '../../../environments/environment.development';
+import { environment } from '../../../environments/environment.development';
 import { Observable } from 'rxjs';
 import { Board, CreateBoardDto } from '../models/hire-track-app/board-model';
 
@@ -18,7 +18,7 @@ export class BoardService {
   private boardsData = signal<Board[]>([]);
   private authService:AuthService = inject(AuthService);
   private http: HttpClient = inject(HttpClient);
-  private boardsApi = devenvironment.supabaseUrl + '/rest/v1/boards';
+  private boardsApi = environment.supabaseUrl + '/rest/v1/boards';
   private currentUser = this.authService.getCurrentUser();
 
   getAllBoards() : Observable<Board[]> {

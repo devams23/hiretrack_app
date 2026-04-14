@@ -1,16 +1,16 @@
 /* Google Fonts — must come first */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
 
 @import "tailwindcss";
 
 @theme {
-  --font-sans: 'Inter', 'Poppins', system-ui, sans-serif;
-  --color-brand-orange: #f97316;
-  --color-brand-orange-light: #fff7ed;
-  --color-brand-orange-dark: #ea580c;
-  --color-surface: #f8f9fa;
-  --color-card: #ffffff;
-  --color-sidebar: #ffffff;
+    --font-sans: 'Geist', 'Inter', 'Space Grotesk', system-ui, sans-serif;
+    --color-brand-orange: #f97316;
+    --color-brand-orange-light: #fff7ed;
+    --color-brand-orange-dark: #ea580c;
+    --color-surface: #f8f9fa;
+    --color-card: #ffffff;
+    --color-sidebar: #ffffff;
 }
 
 @layer base {
@@ -23,7 +23,7 @@
     height: 100%;
     margin: 0;
     padding: 0;
-    font-family: 'Inter', 'Poppins', system-ui, sans-serif;
+    font-family: 'Geist', 'Inter', 'Space Grotesk', system-ui, sans-serif;
     background-color: #f8f9fa;
     color: #1e293b;
   }

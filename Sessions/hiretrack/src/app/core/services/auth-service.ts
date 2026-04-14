@@ -1,18 +1,18 @@
 import { inject, Injectable, signal } from '@angular/core';
-import { devenvironment } from '../../../environments/environment.development';
+import { environment } from '../../../environments/environment.development';
 import { HttpClient } from '@angular/common/http';
 import { AuthRequestData } from '../../features/auth/models/auth-model';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { UserModel } from '../models/hire-track-app/user-model';
 import { Router } from '@angular/router';
 import { SupabaseSignInResponse, SupabaseSignUpResponse } from '../models/supabase-auth';
-import { createLinkedSignal } from '@angular/core/primitives/signals';
+//import { createLinkedSignal } from '@angular/core/primitives/signals';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  private authUrl = devenvironment.supabaseUrl + '/auth/v1';
+  private authUrl = environment.supabaseUrl + '/auth/v1';
   private currentUserSubject = new BehaviorSubject<UserModel | null>(null);
   public currentUser$ = this.currentUserSubject.asObservable();
   private router = inject(Router);
@@ -42,6 +42,7 @@ this.autoLogin();
   }
 
   signOut() {
+    console.log("SIGNING OUT...");
     this.currentUserSubject.next(null);
     this.isAuthenticated.set(false);
     localStorage.removeItem('currentUser');

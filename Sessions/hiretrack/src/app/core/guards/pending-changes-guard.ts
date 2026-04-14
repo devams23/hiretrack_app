@@ -1,11 +1,11 @@
-// example.guard.ts
 import { CanDeactivateFn } from '@angular/router';
-import { JobForm } from '../../features/job-application/job-form/job-form';
 
-export const pendingChangesGuard: CanDeactivateFn<JobForm> = (component) => {
-  console.log("PENDING CHANGES DETEDTED");
-  if (component.hasUnsavedChanges()) {
-    
+export interface HasUnsavedChanges {
+  hasUnsavedChanges?: () => boolean;
+}
+
+export const pendingChangesGuard: CanDeactivateFn<HasUnsavedChanges> = (component) => {
+  if (component.hasUnsavedChanges && component.hasUnsavedChanges()) {
     return confirm('You have unsaved changes. Do you really want to leave?');
   }
   return true;

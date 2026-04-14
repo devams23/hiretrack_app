@@ -13,6 +13,7 @@ import { BoardService } from '../../../core/services/board-service';
 import { Board, KanbanColumn } from '../../../core/models/hire-track-app/board-model';
 import { JobApplication } from '../../../core/models/hire-track-app/jobs-model';
 import { BoardForm } from '../../boards/board-form/board-form';
+import { ToastService } from '../../../core/services/toast-service';
 
 @Component({
   selector: 'app-board-view',
@@ -65,7 +66,7 @@ export class BoardView {
   protected showJobModal = signal<boolean>(false);
   protected selectedColumnId = signal<string>('');
   protected selectedColumnName = signal<string>('');
-
+  protected toastService = inject(ToastService);
   // Delete confirm dialog
   protected jobToDelete = signal<JobApplication | null>(null);
 
@@ -106,6 +107,9 @@ export class BoardView {
   }
 
   closeJobModal() {
+
+    console.log("close job modal called");
+
         if(this.appJobForm.hasUnsavedChanges()){
       if(confirm("Do you want to discard the changes")){
         this.localColumnCleanUp()
@@ -126,12 +130,13 @@ this.localColumnCleanUp();
   
   closeJobModalAfterJobCreation(job: JobApplication) {
     // Optimistic update — no extra API call
+    // event.stopPropagation();
     this.columns.update((columns) => {
       const column = columns.find((c) => c.id === job.column_id);
       if (column) column.job_applications.push(job);
       return [...columns];
     });
-    this.closeJobModal();
+    this.localColumnCleanUp();
   }
 
   // ─── Navigate to job detail ──────────────────────────────────────
@@ -141,17 +146,17 @@ this.localColumnCleanUp();
     this.router.navigate(['/boards', this.boardId(), 'jobs', job.id] , {queryParams:{column_name:columnName}});
   }
 
-  // ─── Drag & Drop (native HTML5) ─────────────────────────────────
+  
   onDragStart(event: DragEvent, job: JobApplication, columnId: string) {
     this.draggedJob = job;
     this.draggedFromColumnId = columnId;
     event.dataTransfer!.effectAllowed = 'move';
-    // Add slight opacity via CSS class handled in template
+
   
   }
 
   onDragEnd(event: DragEvent) {
-    
+    event.preventDefault()
     this.dragOverColumnId.set(null);
   }
 
@@ -199,7 +204,7 @@ this.localColumnCleanUp();
     // Persist to backend
     this.jobService.updateJobColumn(job.id, targetColumnId).subscribe({
       error: (err) => {
-        console.error('Drop failed, reverting:', err);
+        this.toastService.showError('Drop failed, reverting');
         // Revert on error
         this.columns.update((cols) => {
           const fromCol = cols.find((c) => c.id === fromColId);
@@ -230,6 +235,7 @@ this.localColumnCleanUp();
     if (!job) return;
     this.jobService.deleteJob(job.id).subscribe({
       next: () => {
+        this.toastService.showSuccess('Job deleted successfully');
         // Remove locally — no refetch needed
         this.columns.update((cols) => {
           const col = cols.find((c) => c.id === job.column_id);

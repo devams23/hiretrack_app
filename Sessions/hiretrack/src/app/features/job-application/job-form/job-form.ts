@@ -13,6 +13,7 @@ import {
 import { JobApplication, CreateJobDto, UpdateJobDto } from '../../../core/models/hire-track-app/jobs-model';
 import { JobType, WorkMode, ApplicationSource } from '../../../core/types/job-application';
 import { deadlineAfterAppliedDate } from '../../../core/validators/deadline-validator';
+import { ToastService } from '../../../core/services/toast-service';
 
 
 
@@ -73,6 +74,7 @@ export class JobForm {
     'cold-apply':      'Cold Apply',
     'other':           'Other',
   };
+  protected toastService = inject(ToastService);
 
   // ── Lifecycle ───────────────────────────────────────────────────
   ngOnInit() {
@@ -116,6 +118,7 @@ export class JobForm {
 
     this.jobService.createJob(jobData).subscribe({
       next: (response: JobApplication[]) => {
+        this.toastService.showSuccess('Job created successfully');
         if (response?.length) this.jobCreated.emit(response[0]);
         this.jobForm.reset(this.getDefaultValues());
       },
@@ -129,6 +132,7 @@ export class JobForm {
     const dto: UpdateJobDto = { ...this.jobForm.value };
     this.jobService.updateJob(job.id, dto).subscribe({
       next: (updated: JobApplication[]) => {
+        this.toastService.showSuccess('Job updated successfully');
         this.jobUpdated.emit(updated?.length ? updated[0] : { ...job, ...dto } as JobApplication);
       },
       error: (error) => console.error('Error updating job:', error),

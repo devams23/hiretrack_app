@@ -27,7 +27,7 @@ export const routes: Routes = [
     path: '', 
     loadComponent: () => import('./shared/layout/layout').then((m) => m.Layout),
     canActivate: [authGuard],
-    canDeactivate:[pendingChangesGuard],
+    //canDeactivate:[pendingChangesGuard],
 
     children: [
       {
@@ -44,6 +44,7 @@ export const routes: Routes = [
         path: 'boards/:board_id/jobs/:job_id',
         loadComponent: () =>
           import('./features/job-application/job-detail/job-detail').then((m) => m.JobDetail),
+        canDeactivate: [pendingChangesGuard]
       },
     ],
   },
