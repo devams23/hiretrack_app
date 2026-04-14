@@ -61,13 +61,13 @@ SUPABASE_ANON_KEY=your_supabase_anon_key
 ```bash
 npm start
 ```
-This single command securely loads your `.env` variables and bootstraps the Angular development server.
+This single command securely loads the environment variables and bootstraps the Angular development server.
 Navigate to **`http://localhost:4200/`** to view the application in your browser.
 
 ---
 
 ## 👨‍💻 Contributing
 
-We welcome feedback and collaborative changes. Simply open an issue or submit a pull request if you want to request a feature, report a bug, or enhance user experience!
+Open for bug fixes and new features!
 
 **Happy Job Hunting! 🎉**
