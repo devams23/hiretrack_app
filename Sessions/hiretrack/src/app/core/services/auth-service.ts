@@ -12,7 +12,7 @@ import { SupabaseSignInResponse, SupabaseSignUpResponse } from '../models/supaba
   providedIn: 'root',
 })
 export class AuthService {
-  private authUrl = environment.supabaseUrl + '/auth/v1';
+  private authUrl = environment.SUPABASE_URL + '/auth/v1';
   private currentUserSubject = new BehaviorSubject<UserModel | null>(null);
   public currentUser$ = this.currentUserSubject.asObservable();
   private router = inject(Router);

@@ -9,7 +9,7 @@ import { CreateJobDto, JobApplication, UpdateJobDto } from '../models/hire-track
 })
 export class JobService {
 
-  private jobsApiUrl = environment.supabaseUrl + '/rest/v1/job_applications';
+  private jobsApiUrl = environment.SUPABASE_URL + '/rest/v1/job_applications';
   private http = inject(HttpClient);
 
   /** Create a new job application

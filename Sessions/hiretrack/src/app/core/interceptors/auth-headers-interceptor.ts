@@ -12,7 +12,7 @@ export const authHeadersInterceptor: HttpInterceptorFn = (req, next) => {
     //return next(req);
   }
 
-  const token = environment.supabaseAnonKey;
+  const token = environment.SUPBASE_ANON_KEY;
   const authToken = localStorage.getItem('currentUser')
     ? JSON.parse(localStorage.getItem('currentUser')!).accessToken
     : token;

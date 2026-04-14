@@ -18,7 +18,7 @@ export class BoardService {
   private boardsData = signal<Board[]>([]);
   private authService:AuthService = inject(AuthService);
   private http: HttpClient = inject(HttpClient);
-  private boardsApi = environment.supabaseUrl + '/rest/v1/boards';
+  private boardsApi = environment.SUPABASE_URL + '/rest/v1/boards';
   private currentUser = this.authService.getCurrentUser();
 
   getAllBoards() : Observable<Board[]> {

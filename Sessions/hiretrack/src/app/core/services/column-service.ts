@@ -4,11 +4,11 @@ import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { KanbanColumn } from '../models/hire-track-app/board-model';
 
-@Injectable({
+  @Injectable({
   providedIn: 'root',
 })
 export class ColumnService {
-  private  columnsApiUrl = environment.supabaseUrl + '/rest/v1/columns';
+  private  columnsApiUrl = environment.SUPABASE_URL + '/rest/v1/columns';
   private http = inject(HttpClient);
 
   getAllJobsWithColumns(boardId: string) : Observable<KanbanColumn[]> {
