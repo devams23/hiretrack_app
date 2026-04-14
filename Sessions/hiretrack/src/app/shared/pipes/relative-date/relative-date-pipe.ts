@@ -14,7 +14,12 @@ export class RelativeDatePipe implements PipeTransform {
     if (!value) return '—';
 
     const date = value instanceof Date ? value : new Date(value);
+    console.log(date);
     const now = new Date();
+    if(date > now){
+      return date.toDateString();
+    }
+      
     const diffMs = now.getTime() - date.getTime();
     const diffSecs = Math.floor(diffMs / 1000);
     const diffMins = Math.floor(diffSecs / 60);
