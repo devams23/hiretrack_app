@@ -112,7 +112,7 @@
             @for (job of column.job_applications; track job.id) {
               <!-- ── Job Card ── -->
               <div
-                class="group relative bg-white rounded-xl shadow-sm border border-slate-100 p-4 hover:shadow-md hover:border-slate-200 transition-all duration-200 cursor-grab active:cursor-grabbing"
+                class="group relative bg-white rounded-xl shadow-sm border border-slate-100 p-4 hover:shadow-md hover:border-slate-200 transition-all duration-200 cursor-pointer active:cursor-grabbing"
                 [id]="'job-card-' + job.id"
                 draggable="true"
                 (dragstart)="onDragStart($event, job, column.id)"

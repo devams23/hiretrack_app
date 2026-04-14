@@ -64,7 +64,7 @@
       @for (board of boardsList(); track board.id) {
         <button
           (click)="navigateToBoard(board.id)"
-          class="group bg-white rounded-2xl border border-slate-100 shadow-sm hover:shadow-md hover:border-slate-200 transition-all duration-200 text-left overflow-hidden cursor-pointer active:scale-[0.98]"
+          class="group bg-white rounded-2xl border border-slate-100 shadow-sm hover:border-orange-500 transition-all duration-200 text-left overflow-hidden cursor-pointer active:scale-[0.98]"
           [id]="'board-card-' + board.id"
         >
           <!-- Color Strip -->
