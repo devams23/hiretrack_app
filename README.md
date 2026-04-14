@@ -51,7 +51,7 @@ npm install
 ```
 
 ### 3. Environment Setup
-Create `environment.ts` file using `environment.ts.example` inside the `src/environments` folder to connect to Supabase instance:
+Create `environment.development.ts` file using `environment.ts.example` inside the `src/environments` folder to connect to Supabase instance:
 ```env
 SUPABASE_URL=your_supabase_project_url
 SUPABASE_ANON_KEY=your_supabase_anon_key
