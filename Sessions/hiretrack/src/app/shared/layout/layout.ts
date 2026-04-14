@@ -43,7 +43,7 @@ export class Layout {
   }
 
   closeBoardModal() {
-    console.log("hello");
+    //console.log("hello");
     if(this.appBoardForm.hasUnsavedChanges()){
       if(confirm("Do you want to discard the changes")){
         this.showBoardModal.set(false);
@@ -57,7 +57,7 @@ export class Layout {
 
   }
   closeBoardModelAndNavigate(board:Board){
-    console.log("CLOSING BOARD MODEL AND NAVIGATING...");
+    //console.log("CLOSING BOARD MODEL AND NAVIGATING...");
 
     this.showBoardModal.set(false);
     this.boards.update((boards) => [...boards, board]);

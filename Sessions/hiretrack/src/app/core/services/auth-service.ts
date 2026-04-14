@@ -32,7 +32,7 @@ this.autoLogin();
   }
 
   passwordSignIn(signinRequestData: AuthRequestData): Observable<SupabaseSignInResponse> {
-    console.log(this.authUrl);
+    //console.log(this.authUrl);
     
     return this.http
       .post<SupabaseSignInResponse>(`${this.authUrl}/token?grant_type=password`, signinRequestData)
@@ -44,7 +44,7 @@ this.autoLogin();
   }
 
   signOut() {
-    console.log("SIGNING OUT...");
+    //console.log("SIGNING OUT...");
     this.currentUserSubject.next(null);
     this.isAuthenticated.set(false);
     localStorage.removeItem('currentUser');
@@ -55,7 +55,7 @@ this.autoLogin();
   Handles the successful login response ,
   converts it to UserModel and updates the current user */
   handleLoginSuccess(response: SupabaseSignInResponse) {
-    console.log("LOGIN SUCCESS...")
+    //console.log("LOGIN SUCCESS...")
     const userData: UserModel = {
       userId: response.user.id,
       accessToken: response.access_token,
@@ -67,7 +67,7 @@ this.autoLogin();
 
     this.currentUserSubject.next(userData);
     this.isAuthenticated.set(true);
-    console.log("ADDING USER DATA IN LOCAL STORAGE..")
+    //console.log("ADDING USER DATA IN LOCAL STORAGE..")
     localStorage.setItem('currentUser', JSON.stringify(userData));
   }
 
@@ -77,7 +77,7 @@ this.autoLogin();
   autoLogin() {
     const storedUser = localStorage.getItem('currentUser') || "";
     if (storedUser && this.isTokenValid()) {
-      console.log("USER IS LOGGED IN...")
+      //console.log("USER IS LOGGED IN...")
       const userData: UserModel = JSON.parse(storedUser);
       this.currentUserSubject.next(userData);
       this.isAuthenticated.set(true);
@@ -92,8 +92,8 @@ this.autoLogin();
     if(storedUser){
       const userData: UserModel = JSON.parse(storedUser);
       const now = Math.floor(new Date().getTime()/1000);
-      console.log("NOW--" , now )
-      console.log("EXPIRES AT--" , userData.expiresAt);
+      // console.log("NOW--" , now )
+      // console.log("EXPIRES AT--" , userData.expiresAt);
       
       return now < userData.expiresAt;
     }

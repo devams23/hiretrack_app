@@ -7,7 +7,7 @@ export const authHeadersInterceptor: HttpInterceptorFn = (req, next) => {
   const authService = inject(AuthService);  
   if(!authService.isTokenValid()){
     authService.signOut();
-    console.log('TOKEN IS EXPIRED...');
+    //console.log('TOKEN IS EXPIRED...');
     
     //return next(req);
   }

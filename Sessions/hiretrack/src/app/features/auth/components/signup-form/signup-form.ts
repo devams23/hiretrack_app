@@ -3,6 +3,7 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { AuthService } from '../../../../core/services/auth-service';
 import { AuthRequestData } from '../../models/auth-model';
 import { RouterLink } from '@angular/router';
+import { ToastService } from '../../../../core/services/toast-service';
 
 @Component({
   selector: 'app-signup-form',
@@ -12,6 +13,7 @@ import { RouterLink } from '@angular/router';
 })
 export class SignupForm {
   readonly authService = inject(AuthService);
+  protected toastService = inject(ToastService);
 
   onSubmit() {
     if (this.signupForm.valid) {
@@ -21,10 +23,10 @@ export class SignupForm {
       };
       this.authService.passwordSignUp(signupData).subscribe({
         next: (response) => {
-          console.log('Signup successful:', response);
+          this.toastService.showSuccess('Signup successful');
         },
         error: (error) => {
-          console.error('Signup failed:', error);
+          this.toastService.showError('Signup failed');
         }
       });
     } else {

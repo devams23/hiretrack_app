@@ -26,8 +26,8 @@ fs.writeFile(targetPath, envFile, (err) => {
         throw err;
     } else {
         
-        console.log(process.env.SUPABASE_URL);
-        console.log(process.env.SUPABASE_ANON_KEY);
+        // console.log(process.env.SUPABASE_URL);
+        // console.log(process.env.SUPABASE_ANON_KEY);
         console.log(successColor, `${checkSign} Successfully generated environment.development.ts`);
     }
 });

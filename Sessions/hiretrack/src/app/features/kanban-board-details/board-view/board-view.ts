@@ -80,12 +80,12 @@ export class BoardView {
       if (params.get('board_id')) {
         this.boardService.getBoardDetailsById(params.get('board_id')).subscribe({
          next: (board) => {
-          console.log('current board ' ,board);
+          //console.log('current board ' ,board);
           
             this.currentBoard.set(board[0]);
           },
           error: (error) => {
-            console.error('Error fetching board:', error);
+            this.toastService.showError('Error fetching board');
           }
         });
         this.boardId.set(params.get('board_id')!);
@@ -108,7 +108,7 @@ export class BoardView {
 
   closeJobModal() {
 
-    console.log("close job modal called");
+    //console.log("close job modal called");
 
         if(this.appJobForm.hasUnsavedChanges()){
       if(confirm("Do you want to discard the changes")){
@@ -141,7 +141,7 @@ this.localColumnCleanUp();
 
   // ─── Navigate to job detail ──────────────────────────────────────
   openJobDetail(job: JobApplication , columnName:string) {
-    console.log("JOB DETAIL CALLED");
+    //console.log("JOB DETAIL CALLED");
     
     this.router.navigate(['/boards', this.boardId(), 'jobs', job.id] , {queryParams:{column_name:columnName}});
   }
@@ -225,7 +225,7 @@ this.localColumnCleanUp();
   // ─── Delete job ─────────────────────────────────────────────────
   promptDeleteJob(event: Event, job: JobApplication) {
     event.stopPropagation();
-    console.log('DELETING JOB');
+    //console.log('DELETING JOB');
     
     this.jobToDelete.set(job);
   }
