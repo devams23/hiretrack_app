@@ -1,4 +1,5 @@
-import { Component, computed, inject, Signal, signal, ViewChild } from '@angular/core';
+import { Component, computed, inject, Signal, signal, ViewChild, OnDestroy } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ColumnService } from '../../../core/services/column-service';
 import { JobService } from '../../../core/services/job-service';
@@ -21,7 +22,7 @@ import { ToastService } from '../../../core/services/toast-service';
   templateUrl: './board-view.html',
   styleUrl: './board-view.css',
 })
-export class BoardView {
+export class BoardView implements OnDestroy {
 
   private route = inject(ActivatedRoute);
   private router = inject(Router);
@@ -74,29 +75,41 @@ export class BoardView {
   private draggedJob: JobApplication | null = null;
   private draggedFromColumnId: string | null = null;
   protected dragOverColumnId = signal<string | null>(null);
+  
+  private subscription = new Subscription();
 
   ngOnInit() {
-    this.route.paramMap.subscribe((params) => {
-      if (params.get('board_id')) {
-        this.boardService.getBoardDetailsById(params.get('board_id')).subscribe({
-         next: (board) => {
-          //console.log('current board ' ,board);
-          
-            this.currentBoard.set(board[0]);
-          },
-          error: (error) => {
-            this.toastService.showError('Error fetching board');
-          }
-        });
-        this.boardId.set(params.get('board_id')!);
-        this.columnService.getAllJobsWithColumns(this.boardId()).subscribe({
-          next: (columns) => {
-            //console.log(columns)
-            this.columns.set(columns)},
-          error: (err) => console.error(err),
-        });
-      }
-    });
+    this.subscription.add(
+      this.route.paramMap.subscribe((params) => {
+        if (params.get('board_id')) {
+          this.subscription.add(
+            this.boardService.getBoardDetailsById(params.get('board_id')).subscribe({
+             next: (board) => {
+              //console.log('current board ' ,board);
+              
+                this.currentBoard.set(board[0]);
+              },
+              error: (error) => {
+                this.toastService.showError('Error fetching board');
+              }
+            })
+          );
+          this.boardId.set(params.get('board_id')!);
+          this.subscription.add(
+            this.columnService.getAllJobsWithColumns(this.boardId()).subscribe({
+              next: (columns) => {
+                //console.log(columns)
+                this.columns.set(columns)},
+              error: (err) => console.error(err),
+            })
+          );
+        }
+      })
+    );
+  }
+
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
   }
 
   // ─── Job creation modal ─────────────────────────────────────────
@@ -202,21 +215,23 @@ this.localColumnCleanUp();
     });
 
     // Persist to backend
-    this.jobService.updateJobColumn(job.id, targetColumnId).subscribe({
-      error: (err) => {
-        this.toastService.showError('Drop failed, reverting');
-        // Revert on error
-        this.columns.update((cols) => {
-          const fromCol = cols.find((c) => c.id === fromColId);
-          const toCol = cols.find((c) => c.id === targetColumnId);
-          if (fromCol && toCol) {
-            toCol.job_applications = toCol.job_applications.filter((j) => j.id !== job.id);
-            fromCol.job_applications = [...fromCol.job_applications, job];
-          }
-          return [...cols];
-        });
-      },
-    });
+    this.subscription.add(
+      this.jobService.updateJobColumn(job.id, targetColumnId).subscribe({
+        error: (err) => {
+          this.toastService.showError('Drop failed, reverting');
+          // Revert on error
+          this.columns.update((cols) => {
+            const fromCol = cols.find((c) => c.id === fromColId);
+            const toCol = cols.find((c) => c.id === targetColumnId);
+            if (fromCol && toCol) {
+              toCol.job_applications = toCol.job_applications.filter((j) => j.id !== job.id);
+              fromCol.job_applications = [...fromCol.job_applications, job];
+            }
+            return [...cols];
+          });
+        },
+      })
+    );
 
     this.draggedJob = null;
     this.draggedFromColumnId = null;
@@ -233,22 +248,24 @@ this.localColumnCleanUp();
   confirmDelete() {
     const job = this.jobToDelete();
     if (!job) return;
-    this.jobService.deleteJob(job.id).subscribe({
-      next: () => {
-        this.toastService.showSuccess('Job deleted successfully');
-        // Remove locally — no refetch needed
-        this.columns.update((cols) => {
-          const col = cols.find((c) => c.id === job.column_id);
-          if (col) col.job_applications = col.job_applications.filter((j) => j.id !== job.id);
-          return [...cols];
-        });
-        this.jobToDelete.set(null);
-      },
-      error: (err) => {
-        console.error('Delete failed:', err);
-        this.jobToDelete.set(null);
-      },
-    });
+    this.subscription.add(
+      this.jobService.deleteJob(job.id).subscribe({
+        next: () => {
+          this.toastService.showSuccess('Job deleted successfully');
+          // Remove locally — no refetch needed
+          this.columns.update((cols) => {
+            const col = cols.find((c) => c.id === job.column_id);
+            if (col) col.job_applications = col.job_applications.filter((j) => j.id !== job.id);
+            return [...cols];
+          });
+          this.jobToDelete.set(null);
+        },
+        error: (err) => {
+          console.error('Delete failed:', err);
+          this.jobToDelete.set(null);
+        },
+      })
+    );
   }
 
   cancelDelete() {

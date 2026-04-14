@@ -1,4 +1,5 @@
-import { Component, inject, input, output } from '@angular/core';
+import { Component, inject, input, output, OnDestroy, signal } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { KeyValuePipe } from '@angular/common';
 import { JobService } from '../../../core/services/job-service';
 import {
@@ -26,7 +27,7 @@ const URL_PATTERN = /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/i;
   templateUrl: './job-form.html',
   styleUrl: './job-form.css',
 })
-export class JobForm {
+export class JobForm implements OnDestroy {
   // ── Inputs ──────────────────────────────────────────────────────
   /** 'create' (default) — calls createJob, emits jobCreated
    *  'edit'   — calls updateJob, emits jobUpdated             */
@@ -40,8 +41,8 @@ export class JobForm {
   /** Required for edit mode — pre-populates the form */
   jobData = input<JobApplication | null>(null);
 
-  /** Optional: show a saving spinner on the submit button */
-  isSaving = input<boolean>(false);
+  /** Internal state to manage saving spinner and disabled button */
+  isSaving = signal<boolean>(false);
 
   // ── Outputs ─────────────────────────────────────────────────────
   jobCreated = output<JobApplication>();
@@ -84,6 +85,12 @@ export class JobForm {
     }
   }
 
+  private subscription = new Subscription();
+
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
+  }
+
   hasUnsavedChanges():boolean{
     if(this.jobForm.dirty){
       return true
@@ -116,27 +123,41 @@ export class JobForm {
       job_url:         this.jobForm.value.job_url,
     };
 
-    this.jobService.createJob(jobData).subscribe({
-      next: (response: JobApplication[]) => {
-        this.toastService.showSuccess('Job created successfully');
-        if (response?.length) this.jobCreated.emit(response[0]);
-        this.jobForm.reset(this.getDefaultValues());
-      },
-      error: (error) => console.error('Error creating job:', error),
-    });
+    this.isSaving.set(true);
+    this.subscription.add(
+      this.jobService.createJob(jobData).subscribe({
+        next: (response: JobApplication[]) => {
+          this.toastService.showSuccess('Job created successfully');
+          if (response?.length) this.jobCreated.emit(response[0]);
+          this.jobForm.reset(this.getDefaultValues());
+          this.isSaving.set(false);
+        },
+        error: (error) => {
+          console.error('Error creating job:', error);
+          this.isSaving.set(false);
+        },
+      })
+    );
   }
 
   private doUpdate() {
     const job = this.jobData();
     if (!job) return;
     const dto: UpdateJobDto = { ...this.jobForm.value };
-    this.jobService.updateJob(job.id, dto).subscribe({
-      next: (updated: JobApplication[]) => {
-        this.toastService.showSuccess('Job updated successfully');
-        this.jobUpdated.emit(updated?.length ? updated[0] : { ...job, ...dto } as JobApplication);
-      },
-      error: (error) => console.error('Error updating job:', error),
-    });
+    this.isSaving.set(true);
+    this.subscription.add(
+      this.jobService.updateJob(job.id, dto).subscribe({
+        next: (updated: JobApplication[]) => {
+          this.toastService.showSuccess('Job updated successfully');
+          this.jobUpdated.emit(updated?.length ? updated[0] : { ...job, ...dto } as JobApplication);
+          this.isSaving.set(false);
+        },
+        error: (error) => {
+          console.error('Error updating job:', error);
+          this.isSaving.set(false);
+        },
+      })
+    );
   }
 
   // ── Error helper — ONE function, no repeated @if in template ─────

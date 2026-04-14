@@ -1,4 +1,5 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, OnDestroy } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { Board } from '../../../core/models/hire-track-app/board-model';
 import { BoardService } from '../../../core/services/board-service';
 import { Router } from '@angular/router';
@@ -10,7 +11,7 @@ import { RelativeDatePipe } from '../../../shared/pipes/relative-date/relative-d
   templateUrl: './boards-list.html',
   styleUrl: './boards-list.css',
 })
-export class BoardsList {
+export class BoardsList implements OnDestroy {
   boardsList = signal<Board[]>([]);
   private boardService = inject(BoardService);
   private router = inject(Router);
@@ -23,14 +24,22 @@ export class BoardsList {
     this.router.navigate(['/boards/create']);
   }
 
+  private subscription = new Subscription();
+
   ngOnInit() {
-    this.boardService.getAllBoards().subscribe({
-      next: (boards) => {
-        this.boardsList.set(boards);
-      },
-      error: (error) => {
-        console.error('Error fetching boards:', error);
-      }
-    });
+    this.subscription.add(
+      this.boardService.getAllBoards().subscribe({
+        next: (boards) => {
+          this.boardsList.set(boards);
+        },
+        error: (error) => {
+          console.error('Error fetching boards:', error);
+        }
+      })
+    );
+  }
+
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
   }
 }

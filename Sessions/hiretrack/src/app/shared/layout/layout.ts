@@ -1,4 +1,5 @@
-import { Component, inject, signal, ViewChild, viewChild } from '@angular/core';
+import { Component, inject, signal, ViewChild, viewChild, OnDestroy } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { RouterOutlet, RouterLink, RouterLinkActive, Router } from '@angular/router';
 import { AuthService } from '../../core/services/auth-service';
 import { BoardService } from '../../core/services/board-service';
@@ -13,7 +14,7 @@ import { Board } from '../../core/models/hire-track-app/board-model';
   templateUrl: './layout.html',
   styleUrl: './layout.css',
 })
-export class Layout {
+export class Layout implements OnDestroy {
   protected authService = inject(AuthService);
   private boardService = inject(BoardService);
   private router = inject(Router);
@@ -25,15 +26,23 @@ export class Layout {
   isSidebarOpen = signal<boolean>(true);
   isSaved = signal<boolean>(false);
   
+  private subscription = new Subscription();
+  
   ngOnInit() {
-    this.boardService.getAllBoards().subscribe({
-      next: (boards) => {
-        this.boards.set(boards);
-      },
-      error: (error) => {
-        console.error('Error fetching boards:', error);
-      }
-    });
+    this.subscription.add(
+      this.boardService.getAllBoards().subscribe({
+        next: (boards) => {
+          this.boards.set(boards);
+        },
+        error: (error) => {
+          console.error('Error fetching boards:', error);
+        }
+      })
+    );
+  }
+
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
   }
   searchJobs(searchQuery: string) {
     this.searchService.push(searchQuery);

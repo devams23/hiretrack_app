@@ -1,4 +1,5 @@
-import { Component, inject, output, signal } from '@angular/core';
+import { Component, inject, output, signal, OnDestroy } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
   import { BoardService } from '../../../core/services/board-service';
 import { Board, CreateBoardDto } from '../../../core/models/hire-track-app/board-model';
@@ -10,15 +11,23 @@ import { ToastService } from '../../../core/services/toast-service';
   templateUrl: './board-form.html',
   styleUrl: './board-form.css',
 })
-export class BoardForm {
+export class BoardForm implements OnDestroy {
 
   protected boardForm!: FormGroup;
   private boardService = inject(BoardService);
   boardCreated = output<Board>();
   protected toastService = inject(ToastService);
+  private subscription = new Subscription();
+  isSubmitting = signal(false);
+
   ngOnInit() {
     this.initializeForm();
   }
+
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
+  }
+
   hasUnsavedChanges():boolean{
     if(this.boardForm.dirty){
       return true
@@ -35,19 +44,24 @@ export class BoardForm {
         name: this.boardForm.value.name,
         description: this.boardForm.value.description
       }
-      this.boardService.createBoard(boardData).subscribe({
-        next: (response: Board[]) => {
-          if(response){
-            this.toastService.showSuccess('Board created successfully');
-            const boardCreated = response[0];
-            this.boardCreated.emit(boardCreated);
+      this.isSubmitting.set(true);
+      this.subscription.add(
+        this.boardService.createBoard(boardData).subscribe({
+          next: (response: Board[]) => {
+            if(response){
+              this.toastService.showSuccess('Board created successfully');
+              const boardCreated = response[0];
+              this.boardCreated.emit(boardCreated);
+            }
+            this.boardForm.reset();
+            this.isSubmitting.set(false);
+          },
+          error: (error) => {
+            this.toastService.showError('Error creating board');
+            this.isSubmitting.set(false);
           }
-          this.boardForm.reset();
-        },
-        error: (error) => {
-          this.toastService.showError('Error creating board');
-        }
-      });
+        })
+      );
   }
 
   getError(controlName: string): string | null {

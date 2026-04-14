@@ -1,4 +1,5 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnDestroy, signal } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService } from '../../../../core/services/auth-service';
 import { AuthRequestData } from '../../models/auth-model';
@@ -11,9 +12,16 @@ import { ToastService } from '../../../../core/services/toast-service';
   templateUrl: './signup-form.html',
   styleUrl: './signup-form.css',
 })
-export class SignupForm {
+export class SignupForm implements OnDestroy {
   readonly authService = inject(AuthService);
   protected toastService = inject(ToastService);
+
+  private subscription = new Subscription();
+  isSubmitting = signal(false);
+
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
+  }
 
   onSubmit() {
     if (this.signupForm.valid) {
@@ -21,14 +29,19 @@ export class SignupForm {
         email: this.signupForm.value.email!,
         password: this.signupForm.value.password!,
       };
-      this.authService.passwordSignUp(signupData).subscribe({
-        next: (response) => {
-          this.toastService.showSuccess('Signup successful');
-        },
-        error: (error) => {
-          this.toastService.showError('Signup failed');
-        }
-      });
+      this.isSubmitting.set(true);
+      this.subscription.add(
+        this.authService.passwordSignUp(signupData).subscribe({
+          next: (response) => {
+            this.toastService.showSuccess('Signup successful');
+            this.isSubmitting.set(false);
+          },
+          error: (error) => {
+            this.toastService.showError('Signup failed');
+            this.isSubmitting.set(false);
+          }
+        })
+      );
     } else {
       console.error('Form is invalid');
     }

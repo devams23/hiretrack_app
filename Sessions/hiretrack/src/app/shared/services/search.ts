@@ -1,5 +1,5 @@
-import { Injectable, signal } from '@angular/core';
-import { Subject } from 'rxjs';
+import { Injectable, signal, OnDestroy } from '@angular/core';
+import { Subject, Subscription } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 /**
@@ -10,20 +10,27 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 @Injectable({
   providedIn: 'root',
 })
-export class SearchService {
+export class SearchService implements OnDestroy {
 
   readonly searchInput$ = new Subject<string>();
   readonly filteredQuery = signal<string>('');
+  private subscription = new Subscription();
 
   constructor() {
-    this.searchInput$
-      .pipe(
-        debounceTime(300),
-        distinctUntilChanged(),
-      )
-      .subscribe((query) => {
-        this.filteredQuery.set(query.trim().toLowerCase());
-      });
+    this.subscription.add(
+      this.searchInput$
+        .pipe(
+          debounceTime(300),
+          distinctUntilChanged(),
+        )
+        .subscribe((query) => {
+          this.filteredQuery.set(query.trim().toLowerCase());
+        })
+    );
+  }
+
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
   }
 
   /** Called by layout on input event */

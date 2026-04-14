@@ -1,4 +1,5 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnDestroy, signal } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { FormGroup, FormControl, Validators, ReactiveFormsModule } from '@angular/forms';
 import { AuthService } from '../../../../core/services/auth-service';
 import { AuthRequestData } from '../../models/auth-model';
@@ -11,7 +12,7 @@ import { ToastService } from '../../../../core/services/toast-service';
   templateUrl: './signin-form.html',
   styleUrl: './signin-form.css',
 })
-export class SigninForm {
+export class SigninForm implements OnDestroy {
 
   readonly authService = inject(AuthService);
   private router = inject(Router);
@@ -25,6 +26,13 @@ export class SigninForm {
 
   ngOnInit() {
     this.signInForm = this.createSignInForm();
+  }
+
+  private subscription = new Subscription();
+  isSubmitting = signal(false);
+
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
   }
 
   selectDefaultUser(user: AuthRequestData) {
@@ -52,12 +60,18 @@ export class SigninForm {
         password: this.signInForm.value.password!,
       };
 
-      this.authService.passwordSignIn(signinData).subscribe({
-        next: (response) => {
-          this.toastService.showSuccess('Sign-in successful');
-          this.router.navigate(['/']);
-        }
-      });
+      this.isSubmitting.set(true);
+      this.subscription.add(
+        this.authService.passwordSignIn(signinData).subscribe({
+          next: (response) => {
+            this.toastService.showSuccess('Sign-in successful');
+            this.router.navigate(['/']);
+          },
+          error: (error) => {
+            this.isSubmitting.set(false);
+          }
+        })
+      );
     } else {
       this.signInForm.markAllAsTouched();
       this.toastService.showError('Form is invalid');
