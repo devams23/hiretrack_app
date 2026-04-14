@@ -18,7 +18,7 @@ export class ToastService {
   private nextId = 0;
 
   show(message: string, type: ToastType = 'info') {
-    console.log("console.log");
+    //console.log("console.log");
     
     const id = this.nextId++;
     this.toastsSignal.update(toasts => [...toasts, { id, message, type }]);

@@ -32,6 +32,8 @@ this.autoLogin();
   }
 
   passwordSignIn(signinRequestData: AuthRequestData): Observable<SupabaseSignInResponse> {
+    console.log(this.authUrl);
+    
     return this.http
       .post<SupabaseSignInResponse>(`${this.authUrl}/token?grant_type=password`, signinRequestData)
       .pipe(
