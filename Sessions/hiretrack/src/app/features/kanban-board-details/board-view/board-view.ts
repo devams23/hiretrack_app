@@ -7,7 +7,7 @@ import { JobService } from '../../../core/services/job-service';
 
 import { JobForm } from '../../job-application/job-form/job-form';
 import { DecimalPipe } from '@angular/common';
-import { ConfirmDialog } from '../../../shared/confirm-dialog/confirm-dialog';
+import { ConfirmDialog } from '../../../shared/components/confirm-dialog/confirm-dialog';
 import { RelativeDatePipe } from '../../../shared/pipes/relative-date/relative-date-pipe';
 import { JobCountPipe } from '../../../shared/pipes/job-count/job-count-pipe';
 import { SearchService } from '../../../shared/services/search';

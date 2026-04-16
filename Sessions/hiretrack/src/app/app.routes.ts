@@ -24,8 +24,8 @@ export const routes: Routes = [
     ],
   },
   {
-    path: '', 
-    loadComponent: () => import('./shared/layout/layout').then((m) => m.Layout),
+    path: '',
+    loadComponent: () => import('./shared/components/layout/layout').then((m) => m.Layout),
     canActivate: [authGuard],
     //canDeactivate:[pendingChangesGuard],
 
@@ -44,8 +44,12 @@ export const routes: Routes = [
         path: 'boards/:board_id/jobs/:job_id',
         loadComponent: () =>
           import('./features/job-application/job-detail/job-detail').then((m) => m.JobDetail),
-        canDeactivate: [pendingChangesGuard]
+        canDeactivate: [pendingChangesGuard],
       },
     ],
   },
+  {
+    path: '**',
+    loadComponent:()=> import('./shared/components/not-found/not-found').then(m=>m.NotFound)
+  }
 ];
