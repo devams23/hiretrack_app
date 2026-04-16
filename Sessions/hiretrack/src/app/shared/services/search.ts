@@ -1,6 +1,6 @@
 import { Injectable, signal, OnDestroy } from '@angular/core';
 import { Subject, Subscription } from 'rxjs';
-import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 
 /**
  * SearchService — singleton that bridges the header search bar (in Layout)
@@ -22,6 +22,7 @@ export class SearchService implements OnDestroy {
         .pipe(
           debounceTime(300),
           distinctUntilChanged(),
+          switchMap((query) => query)
         )
         .subscribe((query) => {
           this.filteredQuery.set(query.trim().toLowerCase());

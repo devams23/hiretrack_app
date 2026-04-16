@@ -180,7 +180,7 @@ this.localColumnCleanUp();
     this.dragOverColumnId.set(columnId);
   }
 
-  onDragLeave(event: DragEvent, columnId: string) {
+  onDragLeave(event: DragEvent, columnId: string) { 
     // Only clear if we've truly left the column (not entered a child)
     const related = event.relatedTarget as HTMLElement | null;
     if (!related || !(event.currentTarget as HTMLElement).contains(related)) {
@@ -252,7 +252,7 @@ this.localColumnCleanUp();
 
     const randomInRange = (min: number, max: number) => Math.random() * (max - min) + min;
 
-    const interval: any = setInterval(() => {
+    const interval: number = setInterval(() => {
       const timeLeft = animationEnd - Date.now();
 
       if (timeLeft <= 0) {
