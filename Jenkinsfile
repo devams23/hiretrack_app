@@ -11,7 +11,7 @@ pipeline {
         AZURE_VM_IP = credentials('azure-vm-ip-id')
     }
 
-    stages {
+    stages { 
         stage('Cleanup Old Build') {
             steps {
                 sh "docker stop ${IMAGE_NAME} || true && docker rm ${IMAGE_NAME} || true"
