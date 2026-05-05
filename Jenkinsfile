@@ -44,7 +44,7 @@ pipeline {
         success {
             script {
                 try {
-                    withCredentials([usernamePassword(credentialsId: 'hiretrack-app', usernameVariable: 'G_USER', passwordVariable: 'G_TOKEN')]) {
+                    withCredentials([usernamePassword(credentialsId: 'github-sercret', usernameVariable: 'G_USER', passwordVariable: 'G_TOKEN')]) {
 
                         if (env.CHANGE_ID) {
                             sh """
