@@ -1,5 +1,5 @@
 pipeline {
-    
+
     agent any
     
     environment {
@@ -7,10 +7,6 @@ pipeline {
         APP_PORT = "${3000 + Math.abs(SAFE_BRANCH.hashCode() % 1000)}"
         IMAGE_NAME = "hiretrack-${SAFE_BRANCH}"
         
-        // Pulling from Jenkins Credentials Provider
-        // Replace 'supabase-url-id' and 'supabase-key-id' with your actual Jenkins Credential IDs
-        S_URL = credentials('supabase-url-id')
-        S_KEY = credentials('supabase-key-id')
 
         AZURE_VM_IP = credentials('azure-vm-ip-id')
     }
@@ -24,13 +20,16 @@ pipeline {
 
         stage('Docker Build') {
             steps {
-                // S_URL and S_KEY are now pulled securely from Jenkins
-                sh """
-                docker build \
-                --build-arg SUPABASE_URL=${S_URL} \
-                --build-arg SUPABASE_KEY=${S_KEY} \
-                -t ${IMAGE_NAME} .
-                """
+
+                // Securely inject secrets from Jenkins Credentials Store
+                withCredentials([
+                    string(credentialsId: 'supabase-url-id', variable: 'S_URL'),
+                    string(credentialsId: 'supabase-key-id', variable: 'S_KEY')
+                ]) {
+                    // CRITICAL: Use SINGLE QUOTES (') for the sh command
+                    // This prevents the "insecure interpolation" warning
+                    sh 'docker build --build-arg SUPABASE_URL=$S_URL --build-arg SUPABASE_KEY=$S_KEY -t $IMAGE_NAME .'
+                }
             }
         }
 
