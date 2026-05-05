@@ -45,13 +45,13 @@ pipeline {
             success {
                 withCredentials([usernamePassword(credentialsId: 'hiretrack-app',  usernameVariable: 'G_USER', passwordVariable: 'G_TOKEN')]) {
 
-                    sh '''
-                        curl -H "Authorization: token $G_TOKEN" \
-                            -X POST \
-                            -d "{\\"body\\": \\"🚀 Feature Deployed! Access it here: http://${AZURE_VM_IP}:${APP_PORT}\\"}" \
-                            "https://api.github.com/repos/devams23/hiretrack_app/issues/${env.CHANGE_ID}/comments"
-                    '''
-                }   
+                sh """
+                curl -s -X POST \
+                -H "Authorization: token $G_TOKEN" \
+                -H "Content-Type: application/json" \
+                -d '{"body": "🚀 Feature Deployed! Access it here: http://${AZURE_VM_IP}:${APP_PORT}"}' \
+                https://api.github.com/repos/devams23/hiretrack_app/issues/${CHANGE_ID}/comments
+                """
             }
 
 
