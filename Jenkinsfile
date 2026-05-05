@@ -43,7 +43,7 @@ pipeline {
     post {
 
         success {
-            withCredentials([string(credentialsId: 'hiretrack-app', variable: 'G_TOKEN')]) {
+            withCredentials([usernamePassword(credentialsId: 'hiretrack-app', passwordVariable: 'G_TOKEN')]) {
 
                 sh '''
                     curl -H "Authorization: token $G_TOKEN" \
@@ -51,7 +51,7 @@ pipeline {
                         -d "{\\"body\\": \\"🚀 Feature Deployed! Access it here: http://${VM_IP}:${APP_PORT}\\"}" \
                         "https://api.github.com/repos/devams23/hiretrack_app/issues/${CHANGE_ID}/comments"
                 '''
-            }
+            }   
         }
 
 
