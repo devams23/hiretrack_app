@@ -15,7 +15,10 @@ COPY Sessions/hiretrack/ .
 
 # 3. Overwrite the environment file using the ARGs
 # This happens INSIDE the temporary build container
-RUN echo "export const environment = { \
+
+# Ensure the directory exists && Overwrite the environment file using the ARGs
+RUN mkdir -p src/environments && \
+    echo "export const environment = { \
     production: true, \
     supabaseUrl: '${SUPABASE_URL}', \
     supabaseKey: '${SUPABASE_KEY}' \
