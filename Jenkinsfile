@@ -40,26 +40,28 @@ pipeline {
         }
     }
 
-        post {
+    post {
+        success {
+            script {
+                try {
+                    withCredentials([usernamePassword(credentialsId: 'hiretrack-app', usernameVariable: 'G_USER', passwordVariable: 'G_TOKEN')]) {
 
-            success {
-
-                withCredentials([usernamePassword(credentialsId: 'hiretrack-app',  usernameVariable: 'G_USER', passwordVariable: 'G_TOKEN')]) {
-
-                if (env.CHANGE_ID) {
-                    sh """
-                    curl -s -X POST \
-                    -H "Authorization: token $G_TOKEN" \
-                    -H "Content-Type: application/json" \
-                    -d '{"body": "🚀 Feature Deployed! Access it here: http://${AZURE_VM_IP}:${APP_PORT}"}' \
-                    https://api.github.com/repos/devams23/hiretrack_app/issues/${CHANGE_ID}/comments
-                    """
-                } else {
-                    echo "No CHANGE_ID found. Skipping GitHub comment."
+                        if (env.CHANGE_ID) {
+                            sh """
+                            curl -s -X POST \
+                            -H "Authorization: token $G_TOKEN" \
+                            -H "Content-Type: application/json" \
+                            -d '{"body": "🚀 Feature Deployed! Access it here: http://${AZURE_VM_IP}:${APP_PORT}"}' \
+                            https://api.github.com/repos/devams23/hiretrack_app/issues/${CHANGE_ID}/comments
+                            """
+                        } else {
+                            echo "No CHANGE_ID found. Skipping GitHub comment."
+                        }
+                    }
+                } catch (e) {
+                    echo "GitHub comment failed: ${e}"
                 }
             }
-
-
         }
     }
 }
