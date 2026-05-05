@@ -4,7 +4,7 @@ pipeline {
     
     environment {
         SAFE_BRANCH = "${env.BRANCH_NAME.replaceAll(/[^a-zA-Z0-9]/, '-')}".toLowerCase()
-        APP_PORT = "${3000 + Math.abs(SAFE_BRANCH.hashCode() % 1000)}"
+        APP_PORT = "${9000 + Math.abs(SAFE_BRANCH.hashCode() % 1000)}"
         IMAGE_NAME = "hiretrack-${SAFE_BRANCH}"
         
 
@@ -40,20 +40,20 @@ pipeline {
         }
     }
 
-    post {
+        post {
 
-        success {
-            withCredentials([usernamePassword(credentialsId: 'hiretrack-app', passwordVariable: 'G_TOKEN')]) {
+            success {
+                withCredentials([usernamePassword(credentialsId: 'hiretrack-app',  usernameVariable: 'G_USER', passwordVariable: 'G_TOKEN')]) {
 
-                sh '''
-                    curl -H "Authorization: token $G_TOKEN" \
-                        -X POST \
-                        -d "{\\"body\\": \\"🚀 Feature Deployed! Access it here: http://${VM_IP}:${APP_PORT}\\"}" \
-                        "https://api.github.com/repos/devams23/hiretrack_app/issues/${CHANGE_ID}/comments"
-                '''
-            }   
+                    sh '''
+                        curl -H "Authorization: token $G_TOKEN" \
+                            -X POST \
+                            -d "{\\"body\\": \\"🚀 Feature Deployed! Access it here: http://${AZURE_VM_IP}:${APP_PORT}\\"}" \
+                            "https://api.github.com/repos/devams23/hiretrack_app/issues/${CHANGE_ID}/comments"
+                    '''
+                }   
+            }
+
+
         }
-
-
-    }
 }
