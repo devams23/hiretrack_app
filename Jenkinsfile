@@ -49,7 +49,7 @@ pipeline {
                         curl -H "Authorization: token $G_TOKEN" \
                             -X POST \
                             -d "{\\"body\\": \\"🚀 Feature Deployed! Access it here: http://${AZURE_VM_IP}:${APP_PORT}\\"}" \
-                            "https://api.github.com/repos/devams23/hiretrack_app/issues/${CHANGE_ID}/comments"
+                            "https://api.github.com/repos/devams23/hiretrack_app/issues/${env.CHANGE_ID}/comments"
                     '''
                 }   
             }
