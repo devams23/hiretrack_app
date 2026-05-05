@@ -1,7 +1,7 @@
 pipeline {
 
     agent any
-    
+     
     environment {
         SAFE_BRANCH = "${(env.CHANGE_BRANCH ?: env.BRANCH_NAME).replaceAll(/[^a-zA-Z0-9]/, '-')}".toLowerCase()
         APP_PORT = "${9000 + Math.abs(SAFE_BRANCH.hashCode() % 1000)}"
