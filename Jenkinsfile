@@ -43,7 +43,7 @@ pipeline {
     post {
         success {
             echo "Successfully deployed branch: ${env.BRANCH_NAME}"
-            echo "VIEW APP AT: http://${AZURE_VM_IP}:${APP_PORT}"
+            sh 'echo "VIEW APP AT: http://${AZURE_VM_IP}:${APP_PORT}"'
         }
     }
 }
