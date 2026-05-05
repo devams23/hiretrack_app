@@ -20,8 +20,8 @@ COPY Sessions/hiretrack/ .
 RUN mkdir -p src/environments && \
     echo "export const environment = { \
     production: true, \
-    supabaseUrl: '${SUPABASE_URL}', \
-    supabaseKey: '${SUPABASE_KEY}' \
+    SUPABASE_URL: '${SUPABASE_URL}', \
+    SUPABASE_ANON_KEY: '${SUPABASE_KEY}' \
     };" > src/environments/environment.development.ts
 
 # 4. Build the app
